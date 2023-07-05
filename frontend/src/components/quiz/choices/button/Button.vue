@@ -14,7 +14,7 @@ const currentType = computed(() => AnswerStyles[props.type]);
 <template>
   <d-card root-tag="d-button" class="button" role="button" glowing :height="size" :width="size"
           :color="currentType.color">
-    <d-icon :name="currentType.icon" :size="`${(parseInt(size) || 50)-20}px`"/>
+    <d-icon :name="currentType.icon" :size="(parseInt(size) || 50)-20"/>
   </d-card>
 </template>
 
