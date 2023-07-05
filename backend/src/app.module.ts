@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {TypeOrmModule} from "@nestjs/typeorm";
-import { GatewayGateway } from './gateway/gateway.gateway';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { GatewayModule } from './gateway/gateway.module';
 
 @Module({
   imports: [
@@ -12,8 +12,9 @@ import { GatewayGateway } from './gateway/gateway.gateway';
       autoLoadEntities: true,
       synchronize: true, //TODO: remove on prod
     }),
+    GatewayModule,
   ],
   controllers: [AppController],
-  providers: [AppService, GatewayGateway],
+  providers: [AppService],
 })
 export class AppModule {}

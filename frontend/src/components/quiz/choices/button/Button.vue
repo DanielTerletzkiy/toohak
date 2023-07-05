@@ -4,16 +4,18 @@ import {Answer} from "../../../../../../backend/shared/enums/Answer"
 import {AnswerStyles} from "../../../../constants/AnswerStyles";
 
 const props = defineProps({
-  type: {type: Object as PropType<Answer>, required: true}
+  type: {type: Object as PropType<Answer>, required: true},
+  size: {type: String, default: '100px'},
 })
 
-const currentType = computed(()=>AnswerStyles[props.type]);
+const currentType = computed(() => AnswerStyles[props.type]);
 </script>
 
 <template>
-<d-card root-tag="d-button" class="button" role="button" glowing height="100px" width="100px" :color="currentType.color">
-  <d-icon :name="currentType.icon" size="50px"/>
-</d-card>
+  <d-card root-tag="d-button" class="button" role="button" glowing :height="size" :width="size"
+          :color="currentType.color">
+    <d-icon :name="currentType.icon" :size="`${(parseInt(size) || 50)-20}px`"/>
+  </d-card>
 </template>
 
 <style scoped lang="scss">
