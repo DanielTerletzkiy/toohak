@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import {useGlobalStore} from "./stores/globalStore.ts";
+import {useWorker} from "./composables/worker.composable.ts";
 
 const globalStore = useGlobalStore();
 const {canHost} = globalStore;
+
+useWorker();
 
 console.log(globalStore)
 

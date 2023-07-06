@@ -1,11 +1,8 @@
 import {defineStore} from "pinia";
-import {computed, ref} from "vue";
+import {computed} from "vue";
 import {socket} from "../plugins/socket.ts";
 
 export const useGlobalStore = defineStore('globalStore', () => {
-    const currentLobby = ref<string|null>(null);
-
-
     const socketId = computed<string>(() => socket.id);
 
     const isMobile = computed(() => {
@@ -25,7 +22,6 @@ export const useGlobalStore = defineStore('globalStore', () => {
     })
 
     return {
-        currentLobby,
         isMobile,
         canHost,
         socketId,
