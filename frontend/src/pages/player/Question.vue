@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ButtonGrid from "../../components/quiz/choices/button/ButtonGrid.vue";
-import {useGlobalStore} from "../../stores/globalStore.ts";
-import {useQuestionStore} from "../../stores/questionStore.ts";
+import {useGlobalStore} from "../../stores/globalStore";
+import {useQuestionStore} from "../../stores/questionStore";
 import {storeToRefs} from "pinia";
 
 const globalStore = useGlobalStore()

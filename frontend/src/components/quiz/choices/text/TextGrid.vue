@@ -2,13 +2,17 @@
 import DGrid from "vuelize/src/components/flex/DGrid.vue"
 import {Answer} from "../../../../../../backend/shared/enums/Answer";
 import Text from "./Text.vue";
+
+const props = defineProps({
+  answers: {type: Object, required: true}
+})
 </script>
 
 <template>
   <d-card class="wrapper" rounded="xl" background-color="transparent">
     <DGrid columns="2" gap="20">
       <Text v-for="type in Answer" :type="type">
-        text
+        {{answers[type]}}
       </Text>
     </DGrid>
   </d-card>
