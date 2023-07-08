@@ -1,6 +1,7 @@
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -12,17 +13,25 @@ import {
 } from '../../shared/types/SocketData';
 import { GatewayService } from './gateway.service';
 import { SocketAction } from '../../shared/enums/Socket';
+import { forwardRef, Inject } from '@nestjs/common';
 
 @WebSocketGateway(3080, {
   cors: {
     origin: '*',
   },
 })
-export class GatewayGateway {
-  constructor(private gatewayService: GatewayService) {}
+export class GatewayGateway implements OnGatewayConnection {
+  constructor(
+    @Inject(forwardRef(() => GatewayService))
+    private gatewayService: GatewayService,
+  ) {}
 
   @WebSocketServer()
   server: Server;
+
+  public handleConnection(@ConnectedSocket() client: Socket): void {
+    console.log(client.handshake.query.playerId); // "persistent" playerId
+  }
 
   @SubscribeMessage('lobby/join')
   async identity(
@@ -30,6 +39,8 @@ export class GatewayGateway {
     @ConnectedSocket() client: Socket,
   ): Promise<string> {
     client.join(id); //TODO Add database check if lobby exists
+
+    //temp test stuff
     const questionHost: QuestionChangeHost = {
       index: 0,
       text: 'this is a test',

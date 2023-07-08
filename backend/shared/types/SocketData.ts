@@ -11,5 +11,5 @@ export type QuestionChangeHost = {
     b: string;
     c: string;
     d: string;
-  }
+  };
 };

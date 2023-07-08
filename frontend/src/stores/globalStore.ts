@@ -1,9 +1,8 @@
 import {defineStore} from "pinia";
 import {computed} from "vue";
-import {socket} from "../plugins/socket.ts";
 
 export const useGlobalStore = defineStore('globalStore', () => {
-    const socketId = computed<string>(() => socket.id);
+    const socketId = computed<string>(() => localStorage.getItem("playerId") || "");
 
     const isMobile = computed(() => {
         return /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)

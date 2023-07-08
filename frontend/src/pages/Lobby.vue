@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import {useLobbyStore} from "../stores/lobbyStore";
-import {socket} from "../plugins/socket";
 import {QuestionChangeHost, QuestionChangePlayer} from "../../../backend/shared/types/SocketData";
 import {useRouter} from "vue-router";
 import {useQuestionStore} from "../stores/questionStore";
@@ -21,6 +20,7 @@ const questionStore = useQuestionStore()
 const {index, text, answers} = storeToRefs(questionStore)
 
 function onQuestionChange(questionData: QuestionChangePlayer & QuestionChangeHost) {
+  console.log({questionData})
   router.replace('/lobby/question')
   index.value = questionData.index;
   text.value = questionData.text;

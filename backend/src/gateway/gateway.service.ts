@@ -7,7 +7,7 @@ export class GatewayService {
   constructor(private socket: GatewayGateway) {}
 
   emit(data: object, roomId: string, action: SocketAction, ...args: string[]) {
-    const address = [action, args].join('/');
+    const address = [action, ...args].join('/');
     return this.socket.server.to(roomId).emit(address, data);
   }
 }
