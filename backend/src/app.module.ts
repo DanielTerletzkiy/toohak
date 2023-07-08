@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GatewayModule } from './gateway/gateway.module';
 import { NameGeneratorService } from './name-generator/name-generator.service';
+import { AnswerShuffleService } from './answer-shuffle/answer-shuffle.service';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { NameGeneratorService } from './name-generator/name-generator.service';
     GatewayModule,
   ],
   controllers: [AppController],
-  providers: [AppService, NameGeneratorService],
+  providers: [AppService, NameGeneratorService, AnswerShuffleService],
 })
 export class AppModule {}
