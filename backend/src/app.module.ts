@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GatewayModule } from './gateway/gateway.module';
+import { NameGeneratorService } from './name-generator/name-generator.service';
 
 @Module({
   imports: [
@@ -15,6 +16,6 @@ import { GatewayModule } from './gateway/gateway.module';
     GatewayModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, NameGeneratorService],
 })
 export class AppModule {}
