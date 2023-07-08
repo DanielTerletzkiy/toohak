@@ -11,7 +11,7 @@ export class NameGeneratorService {
     'Orange',
     // Add more colors as needed
   ];
-    
+
   private readonly animals: string[] = [
     'Lion',
     'Tiger',
@@ -26,10 +26,10 @@ export class NameGeneratorService {
     const randomColorIndex = Math.floor(Math.random() * this.colors.length);
     const randomAnimalIndex = Math.floor(Math.random() * this.animals.length);
     const randomNumber = Math.floor(Math.random() * 100); // Generate a random number between 0 and 99
-  
-		const color = this.colors[randomColorIndex];
+
+    const color = this.colors[randomColorIndex];
     const animal = this.animals[randomAnimalIndex];
-    
+
     return `${color}${animal}${randomNumber}`;
   }
 }
