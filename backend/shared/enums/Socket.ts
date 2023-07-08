@@ -1,14 +1,7 @@
-export enum SocketPath {
-  Lobby = 'lobby',
-  User = 'user',
-  Answer = 'answer',
-}
-
 export enum SocketAction {
-  Update = 'update',
-  Create = 'create',
-  Remove = 'remove',
-  Join = 'join',
-  Leave = 'leave',
-  Vote = 'vote',
+  LobbyJoin = 'lobby/join',
+  LobbyLeave = 'lobby/leave',
+  AnswerVote = 'answer/vote',
+  HostQuestionChange = 'host/question/change',
+  PlayerQuestionChange = 'player/question/change',
 }

@@ -1,19 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { SocketAction, SocketPath } from '../../shared/enums/Socket';
+import { SocketAction } from '../../shared/enums/Socket';
 import { GatewayGateway } from './gateway.gateway';
 
 @Injectable()
 export class GatewayService {
   constructor(private socket: GatewayGateway) {}
 
-  emit(
-    path: SocketPath,
-    action: SocketAction,
-    id: number | string,
-    data: object,
-  ) {
-    const address = [path, action, id].join('/');
-    return this.socket.server.emit(address, data);
+  emit(data: object, roomId: string, action: SocketAction, ...args: string[]) {
+    const address = [action, args].join('/');
+    return this.socket.server.to(roomId).emit(address, data);
   }
 }
 

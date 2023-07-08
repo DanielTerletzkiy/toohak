@@ -5,13 +5,14 @@ import {QuestionChangeHost, QuestionChangePlayer} from "../../../backend/shared/
 import {useRouter} from "vue-router";
 import {useQuestionStore} from "../stores/questionStore";
 import {storeToRefs} from "pinia";
-import {onMounted} from "vue";
 import {useGlobalStore} from "../stores/globalStore.ts";
+import {useSocketListener} from "../composables/socket.composable.ts";
+import {SocketAction} from "../../../backend/shared/enums/Socket.ts";
 
 const router = useRouter()
 
 const globalStore = useGlobalStore()
-const {isHost} = globalStore;
+const {isHost} = storeToRefs(globalStore);
 
 const lobbyStore = useLobbyStore()
 const {lobbyId} = lobbyStore;
@@ -20,18 +21,15 @@ const questionStore = useQuestionStore()
 const {index, text, answers} = storeToRefs(questionStore)
 
 function onQuestionChange(questionData: QuestionChangePlayer & QuestionChangeHost) {
-  console.log({questionData})
   router.replace('/lobby/question')
   index.value = questionData.index;
   text.value = questionData.text;
-  if(isHost){
+  if (isHost.value) {
     answers.value = questionData.answers;
   }
 }
 
-onMounted(() => {
-  socket.on(`${isHost ? 'host' : 'player'}/question/change`, onQuestionChange)
-})
+useSocketListener(onQuestionChange, isHost.value ? SocketAction.HostQuestionChange : SocketAction.PlayerQuestionChange)
 </script>
 
 <template>
