@@ -21,14 +21,18 @@ export class AnswerShuffleService {
     return array;
   }
     
-  private findCorrectAnswer(a: string, b: string, c: string, d: string, answerString: string): string {
-    const answerMap: Record<string, string> = {
-      a: 'a',
-      b: 'b',
-      c: 'c',
-      d: 'd',
-    };
-      
-    return answerMap[answerString] || null;
+  private findCorrectAnswer(a: string, b: string, c: string, d: string, answerString: string): any {
+    switch (answerString) {
+      case a:
+        return 'a';
+      case b: 
+        return 'b';
+      case c:
+        return 'c';
+      case d:
+        return 'd';
+      default:
+        return null;
+    }
   }
 }
