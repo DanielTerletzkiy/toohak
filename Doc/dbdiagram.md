@@ -21,17 +21,17 @@ Table Question {
   b varchar
   c varchar
   d varchar
-  correctAnswere varchar
+  correctAnswers varchar
 }
-Table UserAnswere {
+Table UserAnswers {
   UserID integer
   LobbyID integer
   QuestionID varchar
-  choosenAnswere varchar
+  choosenAnswers varchar
   Duration varchar
 }
 Ref: Lobby.UserID <> User.id // many-to-many
 Ref: Lobby.Host > User.id // many-to-many
-Ref: UserAnswere.UserID - User.id // one-to-one
-Ref: UserAnswere.LobbyID > Lobby.id // many-to-one
-Ref: UserAnswere.QuestionID > Question.id // many-to-one
+Ref: UserAnswers.UserID - User.id // one-to-one
+Ref: UserAnswers.LobbyID > Lobby.id // many-to-one
+Ref: UserAnswers.QuestionID > Question.id // many-to-one

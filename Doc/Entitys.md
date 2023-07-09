@@ -2,8 +2,8 @@
 
 Lobby(ID, Created, closedDate, UserID(manyToMany), Host (UserID))
 User (ID, SocketID, Name)
-Question(ID(API-ID), QuestionText, a, b, c, d, correctAnswere)
-UserAnswere(UserID, LobbyID(manyToOne), QuestionID, choosenAnswere, Duration)
+Question(ID(API-ID), QuestionText, a, b, c, d, correctAnswers)
+UserAnswers(UserID, LobbyID(manyToOne), QuestionID, choosenAnswers, Duration)
 
 ## other information
 SocketID= for Connection identification
