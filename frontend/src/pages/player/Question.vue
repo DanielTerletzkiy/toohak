@@ -12,7 +12,7 @@ const {text, voted} = storeToRefs(questionStore)
 </script>
 
 <template>
-  <d-column class="page" block>
+  <d-column class="page" block :wrap="false">
     <d-card elevation="4" rounded="xl" width="100%">
       <d-card-title>
         "{{ text }}"
