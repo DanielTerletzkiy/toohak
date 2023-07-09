@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToMany, ManyToOne, PrimaryColumn } from 'typeorm';
-import { Lobby } from '../../lobbys/entities/lobby.entity';
+import { Lobby } from '../../lobbies/entities/lobby.entity';
 import { UserAnswers } from '../../user-answers/entities/user-answers.entity';
 
 @Entity()

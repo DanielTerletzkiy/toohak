@@ -3,13 +3,13 @@ import { CreateLobbyDto } from './dto/create-lobby.dto';
 import { UpdateLobbyDto } from './dto/update-lobby.dto';
 
 @Injectable()
-export class LobbysService {
+export class LobbiesService {
   create(createLobbyDto: CreateLobbyDto) {
     return 'This action adds a new lobby';
   }
 
   findAll() {
-    return `This action returns all lobbys`;
+    return `This action returns all lobbies`;
   }
 
   findOne(id: number) {

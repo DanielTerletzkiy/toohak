@@ -3,36 +3,36 @@ import {
   SubscribeMessage,
   MessageBody,
 } from '@nestjs/websockets';
-import { LobbysService } from './lobbys.service';
+import { LobbiesService } from './lobbies.service';
 import { CreateLobbyDto } from './dto/create-lobby.dto';
 import { UpdateLobbyDto } from './dto/update-lobby.dto';
 
 @WebSocketGateway()
-export class LobbysGateway {
-  constructor(private readonly lobbysService: LobbysService) {}
+export class LobbiesGateway {
+  constructor(private readonly lobbiesService: LobbiesService) {}
 
   @SubscribeMessage('createLobby')
   create(@MessageBody() createLobbyDto: CreateLobbyDto) {
-    return this.lobbysService.create(createLobbyDto);
+    return this.lobbiesService.create(createLobbyDto);
   }
 
-  @SubscribeMessage('findAllLobbys')
+  @SubscribeMessage('findAllLobbies')
   findAll() {
-    return this.lobbysService.findAll();
+    return this.lobbiesService.findAll();
   }
 
   @SubscribeMessage('findOneLobby')
   findOne(@MessageBody() id: number) {
-    return this.lobbysService.findOne(id);
+    return this.lobbiesService.findOne(id);
   }
 
   @SubscribeMessage('updateLobby')
   update(@MessageBody() updateLobbyDto: UpdateLobbyDto) {
-    return this.lobbysService.update(updateLobbyDto.id, updateLobbyDto);
+    return this.lobbiesService.update(updateLobbyDto.id, updateLobbyDto);
   }
 
   @SubscribeMessage('removeLobby')
   remove(@MessageBody() id: number) {
-    return this.lobbysService.remove(id);
+    return this.lobbiesService.remove(id);
   }
 }

@@ -6,10 +6,10 @@ import { GatewayModule } from './gateway/gateway.module';
 import { NameGeneratorService } from './name-generator/name-generator.service';
 import { AnswerShuffleService } from './answer-shuffle/answer-shuffle.service';
 import { QuestionApiService } from './question-api/question-api.service';
-import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpModule } from '@nestjs/axios';
 import { QuestionsModule } from './questions/questions.module';
 import { UsersModule } from './users/users.module';
-import { LobbysModule } from './lobbys/lobbys.module';
+import { LobbiesModule } from './lobbies/lobbies.module';
 import { UserAnswersModule } from './user-answers/user-answers.module';
 
 @Module({
@@ -25,7 +25,7 @@ import { UserAnswersModule } from './user-answers/user-answers.module';
     GatewayModule,
     QuestionsModule,
     UsersModule,
-    LobbysModule,
+    LobbiesModule,
     UserAnswersModule,
   ],
   controllers: [AppController],

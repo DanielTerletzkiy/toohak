@@ -1,4 +1,4 @@
-import { Lobby } from 'src/lobbys/entities/lobby.entity';
+import { Lobby } from 'src/lobbies/entities/lobby.entity';
 import { Question } from 'src/questions/entities/question.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
