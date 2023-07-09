@@ -12,7 +12,16 @@
 - then type: npm run start:dev
   - backend app starts usually on port 3000
   - port can be checked and changed in backend\dist\src\main.js or backend\src\main.ts (at: app.listen(3000))
+- open port with localhost:#portnumber#
 - more functions can be read with help command: npx g --help
+
+## work on frontend:
+- open console on frontend directory
+- then type: npm i
+  - to install dependencys
+- then type: npm run dev
+  - frontend port will be given in console
+- open port with localhost:#portnumber#
 
 ## explanation of the node tools npm and npx
 Both tools (npm and npx) are part of the Node.js development environment and provide developers with a convenient way to install packages, manage projects, and execute commands to support JavaScript development.
