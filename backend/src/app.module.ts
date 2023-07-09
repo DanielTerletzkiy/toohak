@@ -5,6 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GatewayModule } from './gateway/gateway.module';
 import { NameGeneratorService } from './name-generator/name-generator.service';
 import { AnswerShuffleService } from './answer-shuffle/answer-shuffle.service';
+import { QuestionApiService } from './question-api/question-api.service';
+import { HttpModule, HttpService } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -15,8 +17,9 @@ import { AnswerShuffleService } from './answer-shuffle/answer-shuffle.service';
       synchronize: true, //TODO: remove on prod
     }),
     GatewayModule,
+    HttpModule
   ],
   controllers: [AppController],
-  providers: [AppService, NameGeneratorService, AnswerShuffleService],
+  providers: [AppService, NameGeneratorService, AnswerShuffleService, QuestionApiService],
 })
 export class AppModule {}
