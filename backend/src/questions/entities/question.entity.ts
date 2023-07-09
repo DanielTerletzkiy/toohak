@@ -2,25 +2,6 @@ import { UserAnswers } from 'src/user-answers/entities/user-answers.entity';
 import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 import { Answer } from '../../../shared/enums/Answer';
 
-/*@Entity()
-export class Question {
-    @OneToMany(() => UserAnswers, userAnswere => userAnswere.QuestionID)
-    @PrimaryColumn()
-    id: string;
-    @Column()
-    questionText: string;
-    @Column()
-    a: string;
-    @Column()
-    b: string;
-    @Column()
-    c: string;
-    @Column()
-    d: string;
-    @Column()
-    correctAnswere: string;
-}*/
-
 @Entity()
 export class Question {
   @PrimaryColumn()

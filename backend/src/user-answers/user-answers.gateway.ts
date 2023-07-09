@@ -4,16 +4,16 @@ import {
   MessageBody,
 } from '@nestjs/websockets';
 import { UserAnswersService } from './user-answers.service';
-import { CreateUserAnswereDto } from './dto/create-user-answere.dto';
-import { UpdateUserAnswereDto } from './dto/update-user-answere.dto';
+import { CreateUserAnswersDto } from './dto/create-user-answere.dto';
+import { UpdateUserAnswersDto } from './dto/update-user-answere.dto';
 
 @WebSocketGateway()
 export class UserAnswersGateway {
   constructor(private readonly userAnswersService: UserAnswersService) {}
 
-  @SubscribeMessage('createUserAnswere')
-  create(@MessageBody() createUserAnswereDto: CreateUserAnswereDto) {
-    return this.userAnswersService.create(createUserAnswereDto);
+  @SubscribeMessage('createUserAnswers')
+  create(@MessageBody() createUserAnswersDto: CreateUserAnswersDto) {
+    return this.userAnswersService.create(createUserAnswersDto);
   }
 
   @SubscribeMessage('findAllUserAnswers')
@@ -21,20 +21,20 @@ export class UserAnswersGateway {
     return this.userAnswersService.findAll();
   }
 
-  @SubscribeMessage('findOneUserAnswere')
+  @SubscribeMessage('findOneUserAnswers')
   findOne(@MessageBody() id: number) {
     return this.userAnswersService.findOne(id);
   }
 
-  @SubscribeMessage('updateUserAnswere')
-  update(@MessageBody() updateUserAnswereDto: UpdateUserAnswereDto) {
+  @SubscribeMessage('updateUserAnswers')
+  update(@MessageBody() updateUserAnswersDto: UpdateUserAnswersDto) {
     return this.userAnswersService.update(
-      updateUserAnswereDto.id,
-      updateUserAnswereDto,
+      updateUserAnswersDto.id,
+      updateUserAnswersDto,
     );
   }
 
-  @SubscribeMessage('removeUserAnswere')
+  @SubscribeMessage('removeUserAnswers')
   remove(@MessageBody() id: number) {
     return this.userAnswersService.remove(id);
   }

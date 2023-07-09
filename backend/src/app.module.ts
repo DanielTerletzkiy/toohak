@@ -21,8 +21,8 @@ import { UserAnswersModule } from './user-answers/user-answers.module';
       autoLoadEntities: true,
       synchronize: true, //TODO: remove on prod
     }),
-    GatewayModule,
     HttpModule,
+    GatewayModule,
     QuestionsModule,
     UsersModule,
     LobbysModule,

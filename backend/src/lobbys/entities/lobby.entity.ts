@@ -10,23 +10,6 @@ import {
 } from 'typeorm';
 import { UserAnswers } from '../../user-answers/entities/user-answers.entity';
 
-/*@Entity()
-export class Lobby {
-  @OneToMany(() => UserAnswers, (userAnswere) => userAnswere.LobbyID)
-  @PrimaryGeneratedColumn()
-  id: number;
-  @Column()
-  Created: string;
-  @Column()
-  closedDate: string;
-  @ManyToMany(() => User, (user) => user.id)
-  @JoinColumn()
-  UserID: number;
-  @ManyToOne(() => User, (user) => user.id)
-  @JoinColumn()
-  Host: number;
-}*/
-
 @Entity()
 export class Lobby {
   @PrimaryGeneratedColumn('uuid')
