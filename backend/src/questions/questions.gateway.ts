@@ -1,4 +1,8 @@
-import { WebSocketGateway, SubscribeMessage, MessageBody } from '@nestjs/websockets';
+import {
+  WebSocketGateway,
+  SubscribeMessage,
+  MessageBody,
+} from '@nestjs/websockets';
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
@@ -24,7 +28,10 @@ export class QuestionsGateway {
 
   @SubscribeMessage('updateQuestion')
   update(@MessageBody() updateQuestionDto: UpdateQuestionDto) {
-    return this.questionsService.update(updateQuestionDto.id, updateQuestionDto);
+    return this.questionsService.update(
+      updateQuestionDto.id,
+      updateQuestionDto,
+    );
   }
 
   @SubscribeMessage('removeQuestion')

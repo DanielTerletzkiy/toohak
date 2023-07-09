@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Answer } from '../../shared/enums/Answer';
 
 @Injectable()
 export class AnswerShuffleService {
@@ -29,16 +30,16 @@ export class AnswerShuffleService {
     c: string,
     d: string,
     answerString: string,
-  ): string | null {
+  ): Answer | null {
     switch (answerString) {
       case a:
-        return 'a';
+        return Answer.A;
       case b:
-        return 'b';
+        return Answer.B;
       case c:
-        return 'c';
+        return Answer.C;
       case d:
-        return 'd';
+        return Answer.D;
       default:
         return null;
     }

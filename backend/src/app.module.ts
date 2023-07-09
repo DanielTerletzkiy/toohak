@@ -10,7 +10,7 @@ import { HttpModule, HttpService } from '@nestjs/axios';
 import { QuestionsModule } from './questions/questions.module';
 import { UsersModule } from './users/users.module';
 import { LobbysModule } from './lobbys/lobbys.module';
-import { UserAnsweresModule } from './user-answeres/user-answeres.module';
+import { UserAnswersModule } from './user-answers/user-answers.module';
 
 @Module({
   imports: [
@@ -26,9 +26,14 @@ import { UserAnsweresModule } from './user-answeres/user-answeres.module';
     QuestionsModule,
     UsersModule,
     LobbysModule,
-    UserAnsweresModule
+    UserAnswersModule,
   ],
   controllers: [AppController],
-  providers: [AppService, NameGeneratorService, AnswerShuffleService, QuestionApiService],
+  providers: [
+    AppService,
+    NameGeneratorService,
+    AnswerShuffleService,
+    QuestionApiService,
+  ],
 })
 export class AppModule {}

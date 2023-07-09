@@ -6,17 +6,18 @@ import { QuestionApiService } from './question-api/question-api.service';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService,
-              private readonly nameService: NameGeneratorService,
-              private readonly shuffleService: AnswerShuffleService,
-              private readonly questionApi: QuestionApiService
-              ) {}
+  constructor(
+    private readonly appService: AppService,
+    private readonly nameService: NameGeneratorService,
+    private readonly shuffleService: AnswerShuffleService,
+    private readonly questionApi: QuestionApiService,
+  ) {}
 
   @Get('/hello')
   getHello(): string {
     return this.appService.getHello();
   }
-  
+
   @Get()
   get(): string {
     return this.nameService.generateName();
@@ -24,8 +25,8 @@ export class AppController {
 
   @Get('/shuffle')
   getShuffle(): any {
-    let answers = ['apple', 'banana', 'cherry', 'durian'];
-    return this.shuffleService.shuffle(answers,'cherry');
+    const answers = ['apple', 'banana', 'cherry', 'durian'];
+    return this.shuffleService.shuffle(answers, 'cherry');
   }
 
   @Get('/questions')
