@@ -13,21 +13,21 @@ import {UserAnswers} from '../../user-answers/entities/user-answers.entity';
 @Entity()
 export class Lobby {
     @PrimaryGeneratedColumn('uuid')
-    id: number;
+    id: string;
 
     @CreateDateColumn({type: "datetime"})
     createdDate: Date;
 
-    @Column({type: "datetime"})
+    @Column({type: "datetime", nullable: true})
     closedDate: Date;
 
-    @ManyToMany(() => User, (user) => user.lobbies)
+    @ManyToMany(() => User, (user) => user.lobbies, {eager: true})
     @JoinColumn()
     players: User[];
 
     @OneToMany(() => UserAnswers, (userAnswers) => userAnswers.lobby)
     userAnswers: UserAnswers[];
 
-    @ManyToOne(() => User, (user) => user.hostedLobbies)
+    @ManyToOne(() => User, (user) => user.hostedLobbies, {eager: true})
     host: User;
 }

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Answer } from '../../shared/enums/Answer';
+import {Question} from "../questions/entities/question.entity";
 
 @Injectable()
 export class AnswerShuffleService {
@@ -11,6 +12,8 @@ export class AnswerShuffleService {
     const shuffledAnswers = this.shuffleArray([...answers]);
     const [a, b, c, d] = shuffledAnswers;
     const correctAnswer = this.findCorrectAnswer(a, b, c, d, correct);
+
+    //TODO: const question = new Question();
 
     return { a, b, c, d, correctAnswer };
   }

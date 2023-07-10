@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import {MiddlewareConsumer, Module} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -11,6 +11,9 @@ import { QuestionsModule } from './questions/questions.module';
 import { UsersModule } from './users/users.module';
 import { LobbiesModule } from './lobbies/lobbies.module';
 import { UserAnswersModule } from './user-answers/user-answers.module';
+import { MiddlewareModule } from './middleware/middleware.module';
+import {UserInjectMiddleware} from "./middleware/user-inject.middleware";
+import { NameGeneratorModule } from './name-generator/name-generator.module';
 
 @Module({
   imports: [
@@ -27,13 +30,19 @@ import { UserAnswersModule } from './user-answers/user-answers.module';
     UsersModule,
     LobbiesModule,
     UserAnswersModule,
+    MiddlewareModule,
+    NameGeneratorModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    NameGeneratorService,
     AnswerShuffleService,
     QuestionApiService,
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+        .apply(UserInjectMiddleware).forRoutes("*")
+  }
+}

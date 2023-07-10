@@ -1,6 +1,15 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateLobbyDto } from './create-lobby.dto';
+import {Lobby} from "../entities/lobby.entity";
+import {User} from "../../users/entities/user.entity";
+import {UserAnswers} from "../../user-answers/entities/user-answers.entity";
 
-export class UpdateLobbyDto extends PartialType(CreateLobbyDto) {
-  id: number;
+export class UpdateLobbyDto implements Partial<Lobby>{
+  closedDate: Date;
+  createdDate: Date;
+  host: User;
+  id: string;
+  players: User[];
+  userAnswers: UserAnswers[];
+
 }
