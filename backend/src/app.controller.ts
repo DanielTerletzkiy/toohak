@@ -1,14 +1,14 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { AppService } from './app.service';
 import { NameGeneratorService } from './name-generator/name-generator.service';
-import { QuestionApiService } from './import-question/question-api/question-api.service';
+import { ImportQuestionService } from './import-question/import-question.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly nameService: NameGeneratorService,
-    private readonly importQuestion: QuestionApiService
+    private readonly importQuestion: ImportQuestionService
   ) {}
 
   @Get('/hello')
@@ -21,15 +21,14 @@ export class AppController {
     return this.nameService.generateName();
   }
 
-  @Get('/questions')
+  @Get('/questions/import')
   async getQuestions(): Promise<any> {
-    const questions = await this.importQuestion.getQuestions();
+    const questions = await this.importQuestion.importQuestions();
     return questions;
   }
 
   @Get('/questions/:id')
   async getQuestion(@Param('id') id: string): Promise<any> {
-    console.log(id);
     const question = await this.importQuestion.getQuestionById(id);
     return question;
   }

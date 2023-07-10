@@ -1,6 +1,12 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateQuestionDto } from './create-question.dto';
+import { Question } from '../entities/question.entity';
+import { Answer } from 'shared/enums/Answer';
 
-export class UpdateQuestionDto extends PartialType(CreateQuestionDto) {
-  id: number;
+export class UpdateQuestionDto implements Partial<Question> {
+    id:string;
+    questionText:string;
+    a:string;
+    b:string;
+    c:string;
+    d:string;
+    correctAnswer:Answer;
 }
