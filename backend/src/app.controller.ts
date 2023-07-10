@@ -20,16 +20,4 @@ export class AppController {
   get(): string {
     return this.nameService.generateName();
   }
-
-  @Get('/questions/import')
-  async getQuestions(): Promise<any> {
-    const questions = await this.importQuestion.importQuestions();
-    return questions;
-  }
-
-  @Get('/questions/:id')
-  async getQuestion(@Param('id') id: string): Promise<any> {
-    const question = await this.importQuestion.getQuestionById(id);
-    return question;
-  }
 }

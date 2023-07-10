@@ -28,7 +28,6 @@ import { ImportQuestionModule } from './import-question/import-question.module';
     UserAnswersModule,
     MiddlewareModule,
     NameGeneratorModule,
-    ImportQuestionModule,
   ],
   controllers: [AppController],
   providers: [
