@@ -16,4 +16,9 @@ export class QuestionsController {
     const question = await this.questionsService.getApiQuestionById(id);
     return question;
   }
+
+  @Get('/random')
+  async getRandom() {
+    return await this.questionsService.getRandom(10);
+  }
 }

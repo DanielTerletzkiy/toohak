@@ -53,4 +53,12 @@ export class QuestionsService {
   async getApiQuestionById(id: string) {
     return this.importQuestionService.getQuestionById(id);
   }
+
+  async getRandom(count: number) {
+    return await this.questionRepository
+    .createQueryBuilder('entity')
+    .orderBy('RANDOM()') // Order the results randomly
+    .take(count) // Select only 10 entries
+    .getMany();
+  }
 }
