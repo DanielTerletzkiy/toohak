@@ -34,7 +34,17 @@ export class LobbiesService {
       throw new ConflictException(`Host still has open lobby: ${openLobby}`);
     }
     const lobby = await this.lobbyRepository.save(createLobbyDto);
-    return this.setQuestions(lobby.id);
+
+    await this.setQuestions(lobby.id);
+
+    const socketClient = this.gateway.socketUsers.get(
+      createLobbyDto.host.socketId,
+    );
+    if (!socketClient) {
+      throw new BadRequestException(`This client is not in the socket array`);
+    }
+    socketClient.join(lobby.id);
+    this.gatewayService.emit(null, lobby.id, SocketAction.LobbyUpdate);
   }
 
   hostHasOpenLobby(user: User) {
@@ -61,7 +71,7 @@ export class LobbiesService {
       throw new BadRequestException(`This client is not in the socket array`);
     }
     socketClient.join(id);
-    this.gatewayService.updateLobby(id).catch();
+    this.gatewayService.emit(null, id, SocketAction.LobbyUpdate);
 
     const lobby = await this.findOneActive(id);
     if (!lobby) {
@@ -78,6 +88,33 @@ export class LobbiesService {
 
     lobby.players.push(user);
     return this.lobbyRepository.save(lobby);
+  }
+
+  async isHosting(id: Lobby['id'], user: User) {
+    const lobby = await this.findOneActive(id);
+    if (!lobby) {
+      throw new ConflictException(`This lobby does not exist (anymore)`);
+    }
+    return lobby.host.socketId === user.socketId;
+  }
+
+  findOngoing(user: User) {
+    return this.lobbyRepository.findOne({
+      where: [
+        {
+          host: {
+            socketId: user.socketId,
+          },
+          closedDate: IsNull(),
+        },
+        {
+          players: {
+            socketId: user.socketId,
+          },
+          closedDate: IsNull(),
+        },
+      ],
+    });
   }
 
   findAll() {

@@ -7,12 +7,16 @@ const globalStore = useGlobalStore();
 const { canHost } = globalStore;
 
 const lobbyStore = useLobbyStore();
-const { join: joinLobby } = lobbyStore;
+const { join: joinLobby, create: createLobby } = lobbyStore;
 
 const lobbyId = ref("");
 
 function onJoin() {
   joinLobby(lobbyId.value);
+}
+
+function onCreate(){
+  createLobby();
 }
 </script>
 
@@ -41,7 +45,7 @@ function onJoin() {
     </d-column>
     <d-column v-if="canHost" elevation="2">
       <d-card-subtitle class="font-size-medium"> Be the Host!</d-card-subtitle>
-      <d-button color="primary" glow> create lobby</d-button>
+      <d-button color="primary" glow @click="onCreate"> create lobby</d-button>
     </d-column>
     <d-spacer />
   </d-column>

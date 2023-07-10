@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted } from "vue";
+import { onBeforeUnmount } from "vue";
 import { socket } from "../plugins/socket";
 import { SocketAction } from "../../../backend/shared/enums/Socket";
 import { useLobbyStore } from "../stores/lobbyStore.ts";
@@ -15,9 +15,9 @@ export const useSocketListener = (
     callback(data, action);
   }
 
-  onMounted(() => {
+  //onMounted(() => {
     socket.on(address, listener);
-  });
+  //});
 
   onBeforeUnmount(() => {
     socket.off(address, listener);

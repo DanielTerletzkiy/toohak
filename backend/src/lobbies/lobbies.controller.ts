@@ -31,6 +31,16 @@ export class LobbiesController {
     return this.lobbiesService.joinLobby(id, request.player);
   }
 
+  @Get('hosting/:id')
+  isHosting(@Req() request: RequestPlayer, @Param('id') id: string) {
+    return this.lobbiesService.isHosting(id, request.player);
+  }
+
+  @Get('ongoing')
+  findOngoing(@Req() request: RequestPlayer) {
+    return this.lobbiesService.findOngoing(request.player);
+  }
+
   @Get()
   findAll() {
     return this.lobbiesService.findAll();

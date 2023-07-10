@@ -10,16 +10,16 @@ import { storeToRefs } from "pinia";
 import { useGlobalStore } from "../stores/globalStore.ts";
 import { useSocketListener } from "../composables/socket.composable.ts";
 import { SocketAction } from "../../../backend/shared/enums/Socket.ts";
-import { User } from "../../../backend/src/users/entities/user.entity.ts";
-import { ref } from "vue";
+import { watch } from "vue";
 
 const router = useRouter();
 
 const globalStore = useGlobalStore();
-const { isHost } = storeToRefs(globalStore);
+const {} = storeToRefs(globalStore);
 
 const lobbyStore = useLobbyStore();
-const { lobbyId } = lobbyStore;
+const { lobby, isHost } = storeToRefs(lobbyStore);
+const { fetchLobby } = lobbyStore;
 
 const questionStore = useQuestionStore();
 const { id, questionText, answers } = storeToRefs(questionStore);
@@ -28,7 +28,7 @@ function onQuestionChange(
   questionData: QuestionChangePlayer & QuestionChangeHost
 ) {
   console.log({ questionData });
-  router.replace("/lobby/question");
+  router.replace(`/lobby/${isHost.value ? 'host' : 'player'}/question`);
   id.value = questionData.id;
   questionText.value = questionData.questionText;
   if (isHost.value) {
@@ -36,29 +36,23 @@ function onQuestionChange(
   }
 }
 
-useSocketListener(
-  onQuestionChange,
-  isHost.value
-    ? SocketAction.HostQuestionChange
-    : SocketAction.PlayerQuestionChange
-);
+watch(isHost, () => {
+  console.log(isHost.value)
+  useSocketListener(
+    onQuestionChange,
+    isHost.value
+      ? SocketAction.HostQuestionChange
+      : SocketAction.PlayerQuestionChange
+  );
+});
 
-const players = ref<User[]>([]);
-
-function onLobbyUpdate(users: User[]) {
-  console.log({ users });
-  players.value = users;
-}
-
-//TODO: make controller http requests like in check-inventory
-
-useSocketListener(onLobbyUpdate, SocketAction.LobbyUpdate);
+useSocketListener(fetchLobby, SocketAction.LobbyUpdate);
 </script>
 
 <template>
-  <router-view />
-  <d-column gap class="pa-6">
-    <d-card v-for="player in players" :key="player.socketId" block>
+  <router-view/>
+  <d-column v-if="lobby" gap class="pa-6">
+    <d-card v-for="player in lobby.players" :key="player.socketId" block>
       <d-card-title class="font-size-medium">
         {{ player.username }}
       </d-card-title>
