@@ -1,7 +1,7 @@
 import { Lobby } from 'src/lobbies/entities/lobby.entity';
 import { Question } from 'src/questions/entities/question.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import { Answer } from '../../../shared/enums/Answer';
 
 @Entity()
@@ -15,12 +15,12 @@ export class UserAnswers {
   @Column()
   reactionTime: number;
 
-  @OneToMany(() => User, (user) => user.userAnswers)
+  @ManyToOne(() => User, (user) => user.userAnswers)
   user: User;
 
-  @OneToMany(() => Lobby, (lobby) => lobby.userAnswers)
+  @ManyToOne(() => Lobby, (lobby) => lobby.userAnswers)
   lobby: Lobby;
 
-  @OneToMany(() => Question, (question) => question.userAnswers)
+  @ManyToOne(() => Question, (question) => question.userAnswers)
   question: Question;
 }

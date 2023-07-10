@@ -1,33 +1,33 @@
-import { User } from 'src/users/entities/user.entity';
+import {User} from 'src/users/entities/user.entity';
 import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
+    Column, CreateDateColumn,
+    Entity,
+    JoinColumn,
+    ManyToMany,
+    ManyToOne,
+    OneToMany,
+    PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserAnswers } from '../../user-answers/entities/user-answers.entity';
+import {UserAnswers} from '../../user-answers/entities/user-answers.entity';
 
 @Entity()
 export class Lobby {
-  @PrimaryGeneratedColumn('uuid')
-  id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: number;
 
-  @Column()
-  createdDate: Date;
+    @CreateDateColumn({type: "datetime"})
+    createdDate: Date;
 
-  @Column()
-  closedDate: Date;
+    @Column({type: "datetime"})
+    closedDate: Date;
 
-  @ManyToMany(() => User, (user) => user.lobbies)
-  @JoinColumn()
-  players: User[];
+    @ManyToMany(() => User, (user) => user.lobbies)
+    @JoinColumn()
+    players: User[];
 
-  @ManyToOne(() => UserAnswers, (userAnswers) => userAnswers.lobby)
-  userAnswers: UserAnswers[];
+    @OneToMany(() => UserAnswers, (userAnswers) => userAnswers.lobby)
+    userAnswers: UserAnswers[];
 
-  @OneToMany(() => User, (user) => user.hostedLobbies)
-  host: User;
+    @ManyToOne(() => User, (user) => user.hostedLobbies)
+    host: User;
 }
