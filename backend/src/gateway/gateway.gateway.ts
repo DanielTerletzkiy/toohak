@@ -16,7 +16,6 @@ import { SocketAction } from '../../shared/enums/Socket';
 import { forwardRef, Inject } from '@nestjs/common';
 
 @WebSocketGateway(3080, {
-
   cors: {
     origin: '*',
   },

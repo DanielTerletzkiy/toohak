@@ -20,8 +20,10 @@ interface TriviaQuestion {
 
 @Injectable()
 export class QuestionApiService {
-  constructor(private http: HttpService,
-    private shuffleService: AnswerShuffleService) { }
+  constructor(
+    private http: HttpService,
+    private shuffleService: AnswerShuffleService,
+  ) {}
 
   async getQuestions(): Promise<Question[]> {
     const response = await this.http
@@ -43,12 +45,20 @@ export class QuestionApiService {
     return question;
   }
 
-  private mapTriviaQuestionToQuestion(triviaQuestion: TriviaQuestion): Question {
-    let answers = triviaQuestion.incorrectAnswers.concat(triviaQuestion.correctAnswer);
-    let question = new Question();
+  private mapTriviaQuestionToQuestion(
+    triviaQuestion: TriviaQuestion,
+  ): Question {
+    const answers = triviaQuestion.incorrectAnswers.concat(
+      triviaQuestion.correctAnswer,
+    );
+    const question = new Question();
     question.id = triviaQuestion.id;
     question.questionText = triviaQuestion.question.text;
-    this.shuffleService.shuffle(answers, triviaQuestion.correctAnswer, question);
+    this.shuffleService.shuffle(
+      answers,
+      triviaQuestion.correctAnswer,
+      question,
+    );
     return question;
   }
 }

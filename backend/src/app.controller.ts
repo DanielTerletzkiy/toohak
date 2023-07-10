@@ -6,7 +6,7 @@ import { NameGeneratorService } from './name-generator/name-generator.service';
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly nameService: NameGeneratorService
+    private readonly nameService: NameGeneratorService,
   ) {}
 
   @Get('/hello')

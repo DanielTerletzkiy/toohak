@@ -1,4 +1,11 @@
-import {Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryColumn} from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+} from 'typeorm';
 import { Lobby } from '../../lobbies/entities/lobby.entity';
 import { UserAnswers } from '../../user-answers/entities/user-answers.entity';
 

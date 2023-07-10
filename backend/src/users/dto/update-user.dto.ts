@@ -1,4 +1,3 @@
-import {User} from "../entities/user.entity";
+import { User } from '../entities/user.entity';
 
-export class UpdateUserDto implements Partial<User>{
-}
+export class UpdateUserDto implements Partial<User> {}

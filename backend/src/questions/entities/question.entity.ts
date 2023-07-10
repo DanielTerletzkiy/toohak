@@ -1,5 +1,5 @@
 import { UserAnswers } from 'src/user-answers/entities/user-answers.entity';
-import {Column, Entity, ManyToOne, OneToMany, PrimaryColumn} from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
 import { Answer } from '../../../shared/enums/Answer';
 
 @Entity()
