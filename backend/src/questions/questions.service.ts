@@ -56,9 +56,9 @@ export class QuestionsService {
 
   async getRandom(count: number) {
     return await this.questionRepository
-    .createQueryBuilder('entity')
-    .orderBy('RANDOM()') // Order the results randomly
-    .take(count) // Select only 10 entries
-    .getMany();
+      .createQueryBuilder('entity')
+      .orderBy('RANDOM()') // Order the results randomly
+      .take(count) // Select only 10 entries
+      .getMany();
   }
 }

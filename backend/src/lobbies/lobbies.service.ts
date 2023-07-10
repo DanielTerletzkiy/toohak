@@ -98,7 +98,7 @@ export class LobbiesService {
 
     if (entity) {
       entity.setQuestions(questions);
-    
+
       // Save the updated entity back to the database
       await this.lobbyRepository.save(entity);
     }
@@ -109,8 +109,8 @@ export class LobbiesService {
     let question = null;
 
     if (entity) {
-        question = entity.getNextQuestion();
-        await this.lobbyRepository.save(entity);
+      question = entity.getNextQuestion();
+      await this.lobbyRepository.save(entity);
     }
     return question;
   }

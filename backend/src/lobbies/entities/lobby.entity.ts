@@ -34,12 +34,12 @@ export class Lobby {
   host: User;
 
   private questions: Question[];
-  private activeQuestion: number = 0;
+  private activeQuestion = 0;
 
   getNextQuestion(): Question {
-    if(this.activeQuestion < this.questions.length) {
+    if (this.activeQuestion < this.questions.length) {
       return this.questions[this.activeQuestion++];
-    } 
+    }
     return null;
   }
 
