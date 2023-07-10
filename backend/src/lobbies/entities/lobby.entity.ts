@@ -33,7 +33,7 @@ export class Lobby {
   @ManyToOne(() => User, (user) => user.hostedLobbies, { eager: true })
   host: User;
 
-  questions: Question[];
+  private questions: Question[];
   private activeQuestion: number = 0;
 
   getNextQuestion(): Question {
@@ -41,5 +41,9 @@ export class Lobby {
       return this.questions[this.activeQuestion++];
     } 
     return null;
+  }
+
+  setQuestions(questions: Question[]): void {
+    this.questions = questions;
   }
 }

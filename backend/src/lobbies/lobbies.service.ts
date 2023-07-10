@@ -5,6 +5,7 @@ import { Lobby } from './entities/lobby.entity';
 import { CreateLobbyDto } from './dto/create-lobby.dto';
 import { User } from '../users/entities/user.entity';
 import { UpdateLobbyDto } from './dto/update-lobby.dto';
+import { Question } from 'src/questions/entities/question.entity';
 
 @Injectable()
 export class LobbiesService {
@@ -90,5 +91,27 @@ export class LobbiesService {
     return this.lobbyRepository.delete({
       id,
     });
+  }
+
+  async setQuestions(id: Lobby['id'], questions: Question[]) {
+    const entity = await this.findOne(id);
+
+    if (entity) {
+      entity.setQuestions(questions);
+    
+      // Save the updated entity back to the database
+      await this.lobbyRepository.save(entity);
+    }
+  }
+
+  async getNextQuestion(id: Lobby['id']) {
+    const entity = await this.findOne(id);
+    let question = null;
+
+    if (entity) {
+        question = entity.getNextQuestion();
+        await this.lobbyRepository.save(entity);
+    }
+    return question;
   }
 }

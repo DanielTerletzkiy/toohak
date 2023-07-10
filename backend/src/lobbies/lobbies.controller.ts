@@ -12,6 +12,7 @@ import { LobbiesService } from './lobbies.service';
 import { CreateLobbyDto } from './dto/create-lobby.dto';
 import { UpdateLobbyDto } from './dto/update-lobby.dto';
 import { RequestPlayer } from '../middleware/user-inject.middleware';
+import { Question } from 'src/questions/entities/question.entity';
 
 @Controller('lobbies')
 export class LobbiesController {
@@ -49,5 +50,15 @@ export class LobbiesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.lobbiesService.remove(id);
+  }
+
+  @Post(':id/questions')
+  setQuestions(@Param('id') id: string, questions: Question[]) {
+    this.lobbiesService.setQuestions(id, questions);
+  }
+
+  @Get(':id/questions/next')
+  nextQuestions(@Param('id') id: string) {
+    return this.lobbiesService.getNextQuestion(id);
   }
 }
