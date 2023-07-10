@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Answer } from '../../../shared/enums/Answer';
-import { Question } from '../../questions/entities/question.entity';
+import { Answer } from '../../../../shared/enums/Answer';
+import { Question } from '../../entities/question.entity';
 
 @Injectable()
 export class AnswerShuffleService {

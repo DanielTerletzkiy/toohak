@@ -10,7 +10,6 @@ import { UserAnswersModule } from './user-answers/user-answers.module';
 import { MiddlewareModule } from './middleware/middleware.module';
 import { UserInjectMiddleware } from './middleware/user-inject.middleware';
 import { NameGeneratorModule } from './name-generator/name-generator.module';
-import { ImportQuestionModule } from './import-question/import-question.module';
 
 @Module({
   imports: [
