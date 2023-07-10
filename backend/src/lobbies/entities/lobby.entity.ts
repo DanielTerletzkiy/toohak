@@ -33,17 +33,22 @@ export class Lobby {
   @ManyToOne(() => User, (user) => user.hostedLobbies, { eager: true })
   host: User;
 
-  private questions: Question[];
-  private activeQuestion = 0;
+  @ManyToMany(() => Question, (question) => question.lobbies, { eager: true })
+  @JoinTable()
+  questions: Question[];
+
+  @Column({ default: 0 })
+  activeQuestion: number;
 
   getNextQuestion(): Question {
     if (this.activeQuestion < this.questions.length) {
-      return this.questions[this.activeQuestion++];
+      this.activeQuestion++;
+      return this.questions[this.activeQuestion];
     }
     return null;
   }
 
-  setQuestions(questions: Question[]): void {
-    this.questions = questions;
+  noQuestions(): boolean {
+    return this.activeQuestion > this.questions.length - 1;
   }
 }

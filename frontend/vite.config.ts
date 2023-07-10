@@ -6,7 +6,11 @@ export default defineConfig({
     plugins: [vue()],
     server: {
         proxy: {
-            "/api": "localhost:3000",
+            "/api": {
+                target: "http://localhost:3000",
+                changeOrigin: true,
+                secure: false,
+            },
             "/socket.io": {
                 target: "ws://localhost:3080",
                 ws: true,

@@ -1,20 +1,31 @@
-import { Injectable, NestMiddleware, Next, Req, Res } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NestMiddleware,
+  Next,
+  Req,
+  Res,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/entities/user.entity';
-import { NextFunction, Response, Request } from 'express';
+import { NextFunction, Request, Response } from 'express';
 
 export type RequestPlayer = Request & { player: User };
 
 @Injectable()
 export class UserInjectMiddleware implements NestMiddleware {
   constructor(private usersService: UsersService) {}
+
   async use(
     @Req() req: RequestPlayer,
     @Res() res: Response,
     @Next() next: NextFunction,
   ) {
     const playerId = req.headers['player-id'] as string;
-    console.log({ playerId });
+    //console.log({ playerId });
+    if (!playerId) {
+      throw new BadRequestException('player-id is not defined');
+    }
 
     let user = await this.usersService.findOne(playerId);
     if (!user) {
@@ -24,7 +35,7 @@ export class UserInjectMiddleware implements NestMiddleware {
     }
 
     req.player = user;
-    console.log(req.player);
+    //console.log(req.player);
     next();
   }
 }

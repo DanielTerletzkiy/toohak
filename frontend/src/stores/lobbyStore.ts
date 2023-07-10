@@ -1,19 +1,18 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { useSocketEmit } from "../composables/socket.composable.ts";
-import { SocketAction } from "../../../backend/shared/enums/Socket.ts";
+import {joinLobby} from "../api/lobby.ts";
 
 export const useLobbyStore = defineStore("lobbyStore", () => {
   const lobbyId = ref<string>("");
 
-  function joinLobby(id: string) {
+  function join(id: string) {
     if (!id.length) {
       return;
     }
     console.log(id);
     lobbyId.value = id;
-    useSocketEmit(id, SocketAction.LobbyJoin)
+    joinLobby(id);
   }
 
-  return { lobbyId, joinLobby };
+  return { lobbyId, join };
 });

@@ -1,6 +1,14 @@
 import { UserAnswers } from 'src/user-answers/entities/user-answers.entity';
-import { Column, Entity, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+} from 'typeorm';
 import { Answer } from '../../../shared/enums/Answer';
+import { Lobby } from '../../lobbies/entities/lobby.entity';
 
 @Entity()
 export class Question {
@@ -27,4 +35,7 @@ export class Question {
 
   @OneToMany(() => UserAnswers, (userAnswers) => userAnswers.question)
   userAnswers: UserAnswers[];
+
+  @ManyToMany(() => Lobby, (lobby) => lobby.questions)
+  lobbies: Lobby[];
 }

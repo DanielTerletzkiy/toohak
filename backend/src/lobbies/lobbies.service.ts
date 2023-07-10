@@ -1,16 +1,31 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
 import { Lobby } from './entities/lobby.entity';
 import { CreateLobbyDto } from './dto/create-lobby.dto';
 import { User } from '../users/entities/user.entity';
 import { UpdateLobbyDto } from './dto/update-lobby.dto';
-import { Question } from 'src/questions/entities/question.entity';
+import { QuestionsService } from '../questions/questions.service';
+import { GatewayService } from '../gateway/gateway.service';
+import { SocketAction } from '../../shared/enums/Socket';
+import {
+  QuestionChangeHost,
+  QuestionChangePlayer,
+} from '../../shared/types/SocketData';
+import { GatewayGateway } from '../gateway/gateway.gateway';
 
 @Injectable()
 export class LobbiesService {
   constructor(
     @InjectRepository(Lobby) private lobbyRepository: Repository<Lobby>,
+    private questionsService: QuestionsService,
+    private gatewayService: GatewayService,
+    private gateway: GatewayGateway,
   ) {}
 
   async create(createLobbyDto: CreateLobbyDto) {
@@ -18,7 +33,8 @@ export class LobbiesService {
     if (!!openLobby) {
       throw new ConflictException(`Host still has open lobby: ${openLobby}`);
     }
-    return this.lobbyRepository.save(createLobbyDto);
+    const lobby = await this.lobbyRepository.save(createLobbyDto);
+    return this.setQuestions(lobby.id);
   }
 
   hostHasOpenLobby(user: User) {
@@ -40,6 +56,13 @@ export class LobbiesService {
   }
 
   async joinLobby(id: Lobby['id'], user: User) {
+    const socketClient = this.gateway.socketUsers.get(user.socketId);
+    if (!socketClient) {
+      throw new BadRequestException(`This client is not in the socket array`);
+    }
+    socketClient.join(id);
+    this.gatewayService.updateLobby(id).catch();
+
     const lobby = await this.findOneActive(id);
     if (!lobby) {
       throw new ConflictException(`This lobby does not exist (anymore)`);
@@ -93,25 +116,66 @@ export class LobbiesService {
     });
   }
 
-  async setQuestions(id: Lobby['id'], questions: Question[]) {
-    const entity = await this.findOne(id);
+  async setQuestions(id: Lobby['id'], count = 10) {
+    const lobby = await this.findOne(id);
 
-    if (entity) {
-      entity.setQuestions(questions);
-
-      // Save the updated entity back to the database
-      await this.lobbyRepository.save(entity);
+    if (!lobby) {
+      return;
     }
+
+    lobby.questions = await this.questionsService.getRandom(count);
+    return this.lobbyRepository.save(lobby);
   }
 
-  async getNextQuestion(id: Lobby['id']) {
-    const entity = await this.findOne(id);
-    let question = null;
+  async getNextQuestion(id: Lobby['id'], player: User) {
+    const lobby = await this.findOne(id);
 
-    if (entity) {
-      question = entity.getNextQuestion();
-      await this.lobbyRepository.save(entity);
+    if (!lobby) {
+      return;
     }
+
+    if (lobby.host.socketId !== player.socketId) {
+      throw new UnauthorizedException(
+        'This user is not the host of this lobby',
+      );
+    }
+
+    const question = lobby.getNextQuestion();
+    //console.log(entity.activeQuestion, entity.noQuestions(), !!question);
+    await this.lobbyRepository.save(lobby);
+
+    if (!question) {
+      return null;
+    }
+
+    const changeHost: QuestionChangeHost = {
+      id: question.id,
+      questionText: question.questionText,
+      answers: {
+        a: question.a,
+        b: question.b,
+        c: question.c,
+        d: question.d,
+      },
+    };
+
+    const changePlayer: QuestionChangePlayer = {
+      id: question.id,
+      questionText: question.questionText,
+    };
+
+    this.gatewayService.emit(
+      changePlayer,
+      lobby.id,
+      SocketAction.PlayerQuestionChange,
+    );
+
+    this.gatewayService.emit(
+      changeHost,
+      lobby.id,
+      SocketAction.HostQuestionChange,
+    );
+
     return question;
   }
 }

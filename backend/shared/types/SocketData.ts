@@ -1,11 +1,11 @@
 export type QuestionChangePlayer = {
-  index: number;
-  text: string;
+  id: string;
+  questionText: string;
 };
 
 export type QuestionChangeHost = {
-  index: number;
-  text: string;
+  id: string;
+  questionText: string;
   answers: {
     a: string;
     b: string;
