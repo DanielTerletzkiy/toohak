@@ -1,21 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { Answer } from '../../shared/enums/Answer';
-import {Question} from "../questions/entities/question.entity";
+import { Answer } from '../../../shared/enums/Answer';
+import {Question} from "../../questions/entities/question.entity";
 
 @Injectable()
 export class AnswerShuffleService {
   shuffle(
     answers: string[],
     correct: string,
-  ): { a: string; b: string; c: string; d: string; correctAnswer: string } {
+    question: Question
+  ): void {
     // Shuffle the answers and assign the shuffled answers to the variables a, b, c, d
     const shuffledAnswers = this.shuffleArray([...answers]);
     const [a, b, c, d] = shuffledAnswers;
     const correctAnswer = this.findCorrectAnswer(a, b, c, d, correct);
 
-    //TODO: const question = new Question();
-
-    return { a, b, c, d, correctAnswer };
+    question.a = a;
+    question.b = b;
+    question.c = c;
+    question.d = d;
+    question.correctAnswer = correctAnswer;
   }
 
   private shuffleArray(array: any[]): any[] {
