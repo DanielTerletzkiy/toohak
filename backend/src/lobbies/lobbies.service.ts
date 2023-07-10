@@ -1,7 +1,6 @@
 import {Injectable, ConflictException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {IsNull, Repository} from "typeorm";
-import {UpdateUserDto} from "../users/dto/update-user.dto";
 import {Lobby} from "./entities/lobby.entity";
 import {CreateLobbyDto} from "./dto/create-lobby.dto";
 import {User} from "../users/entities/user.entity";
@@ -41,6 +40,12 @@ export class LobbiesService {
         const lobby = await this.findOneActive(id);
         if(!lobby){
             throw new ConflictException(`This lobby does not exist (anymore)`)
+        }
+        if(lobby.host.socketId === user.socketId){
+            throw new ConflictException(`This player is the lobby host`)
+        }
+        if(lobby.players.find((player)=>player.socketId === user.socketId)){
+            throw new ConflictException(`This player is already participating in this lobby`)
         }
 
         lobby.players.push(user);

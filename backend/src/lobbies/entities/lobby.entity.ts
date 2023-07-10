@@ -2,7 +2,7 @@ import {User} from 'src/users/entities/user.entity';
 import {
     Column, CreateDateColumn,
     Entity,
-    JoinColumn,
+    JoinTable,
     ManyToMany,
     ManyToOne,
     OneToMany,
@@ -21,8 +21,8 @@ export class Lobby {
     @Column({type: "datetime", nullable: true})
     closedDate: Date;
 
-    @ManyToMany(() => User, (user) => user.lobbies, {eager: true})
-    @JoinColumn()
+    @ManyToMany(() => User, (user) => user.lobbies, {eager: true, })
+    @JoinTable()
     players: User[];
 
     @OneToMany(() => UserAnswers, (userAnswers) => userAnswers.lobby)
