@@ -4,10 +4,12 @@ import { UpdateQuestionDto } from './dto/update-question.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Question } from './entities/question.entity';
+import { ImportQuestionService } from 'src/import-question/import-question.service';
 
 @Injectable()
 export class QuestionsService {
-  constructor(@InjectRepository(Question) private questionRepository: Repository<Question>) {}
+  constructor(@InjectRepository(Question) private questionRepository: Repository<Question>, 
+            private importQuestionService: ImportQuestionService) {}
 
   create(createQuestionDto: CreateQuestionDto) {
     return this.questionRepository.save(createQuestionDto);
@@ -35,5 +37,16 @@ export class QuestionsService {
 
   remove(id: Question['id']) {
     return this.questionRepository.delete({id});
+  }
+
+  async import() {
+    const questions = await this.importQuestionService.importQuestions();
+    questions.forEach((question: Question) => {
+      this.create(question);
+  });
+  }
+
+  async getApiQuestionById(id: string) {
+    return this.importQuestionService.getQuestionById(id);
   }
 }

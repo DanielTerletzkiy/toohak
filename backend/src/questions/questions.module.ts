@@ -9,7 +9,6 @@ import { ImportQuestionModule } from 'src/import-question/import-question.module
   imports: [TypeOrmModule.forFeature([Question]),
             ImportQuestionModule,],
   providers: [QuestionsService],
-  controllers: [QuestionsController],
-  exports: [QuestionsService],
+  controllers: [QuestionsController]
 })
 export class QuestionsModule {}

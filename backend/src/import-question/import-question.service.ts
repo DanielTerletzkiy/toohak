@@ -1,21 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { QuestionApiService } from './question-api/question-api.service';
-import { Question } from 'src/questions/entities/question.entity';
-import { QuestionsService } from 'src/questions/questions.service';
 
 @Injectable()
 export class ImportQuestionService {
-    constructor(private questionApiService: QuestionApiService,
-        private questionsService: QuestionsService) {}
+    constructor(private questionApiService: QuestionApiService) {}
 
     async importQuestions() {
-        const questions = await this.questionApiService.getQuestions();
-        
-        questions.forEach((question: Question) => {
-            this.questionsService.create(question);
-        });
-
-        return questions;
+        return await this.questionApiService.getQuestions();
     }
 
     async getQuestionById(id: string) {

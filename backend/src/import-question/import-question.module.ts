@@ -7,8 +7,7 @@ import { QuestionsModule } from 'src/questions/questions.module';
 
 @Module({ 
     imports: [
-        HttpModule,
-        QuestionsModule
+        HttpModule
           ],
       controllers: [],
       providers: [
