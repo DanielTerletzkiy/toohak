@@ -1,4 +1,19 @@
-import { Controller } from '@nestjs/common';
+import {Controller, Get, Param} from '@nestjs/common';
+import { ImportQuestionService } from 'src/import-question/import-question.service';
 
 @Controller('questions')
-export class QuestionsController {}
+export class QuestionsController {
+    constructor(private readonly importQuestionsService: ImportQuestionService) {}
+
+    @Get('/import')
+    async getQuestions(): Promise<any> {
+      const questions = await this.importQuestionsService.importQuestions();
+      return questions;
+    }
+  
+    @Get('/import/:id')
+    async getQuestion(@Param('id') id: string): Promise<any> {
+      const question = await this.importQuestionsService.getQuestionById(id);
+      return question;
+    }
+}
