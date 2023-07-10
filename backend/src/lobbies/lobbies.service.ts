@@ -61,6 +61,20 @@ export class LobbiesService {
       .catch(() => false);
   }
 
+  playerHasOpenLobby(user: User) {
+    return this.lobbyRepository
+      .findOneOrFail({
+        where: {
+          players: {
+            socketId: user.socketId,
+          },
+          closedDate: IsNull(),
+        },
+      })
+      .then((lobby) => lobby.id)
+      .catch(() => false);
+  }
+
   lobbyExists(id: Lobby['id']) {
     return this.lobbyRepository.exist({ where: { id } });
   }
@@ -81,8 +95,15 @@ export class LobbiesService {
       throw new ConflictException(`This player is the lobby host`);
     }
     if (lobby.players.find((player) => player.socketId === user.socketId)) {
+      return lobby;
+      /*throw new ConflictException(
+              `This player is already participating in this lobby`,
+            );*/
+    }
+    const openLobby = await this.playerHasOpenLobby(user);
+    if (!!openLobby) {
       throw new ConflictException(
-        `This player is already participating in this lobby`,
+        `This player is already participating in another lobby: ${openLobby}`,
       );
     }
 

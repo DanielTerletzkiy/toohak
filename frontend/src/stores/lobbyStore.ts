@@ -9,12 +9,17 @@ export const useLobbyStore = defineStore("lobbyStore", () => {
 
   const lobby = ref<Lobby>();
 
-  function join(id: string) {
+  async function join(id: string) {
     if (!id.length) {
       return;
     }
+
+    const joinedLobby = await ApiFetchService.fetch<Lobby>(Method.Post, `/lobbies/join/${id}`);
+    if(!joinedLobby){
+      return;
+    }
     lobbyId.value = id;
-    return ApiFetchService.fetch(Method.Post, `/lobbies/join/${id}`);
+    lobby.value = joinedLobby;
   }
 
   async function create() {
