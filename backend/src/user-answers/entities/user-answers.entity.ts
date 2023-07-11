@@ -5,7 +5,6 @@ import {
   Column,
   Entity,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Answer } from '../../../shared/enums/Answer';

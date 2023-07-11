@@ -18,6 +18,8 @@ import {
   QuestionChangePlayer,
 } from '../../shared/types/SocketData';
 import { GatewayGateway } from '../gateway/gateway.gateway';
+import { UserAnswers } from 'src/user-answers/entities/user-answers.entity';
+import { Question } from 'src/questions/entities/question.entity';
 
 @Injectable()
 export class LobbiesService {
@@ -243,5 +245,42 @@ export class LobbiesService {
     );
 
     return question;
+  }
+
+  async getScoreboard(id: Lobby['id']) {
+    const lobby = await this.findOne(id);
+    const users = lobby.players;
+    const questions = lobby.questions;
+    const maxPoints = 1000;
+
+    if (!lobby) {
+      return;
+    }
+
+    let score: { [key: string]: number[] } = {};
+    users.forEach((user: User) => {
+      const userAnswers: UserAnswers[] = lobby.userAnswers.filter((userAnswer: UserAnswers) => userAnswer.user.socketId === user.socketId);
+      score[user.socketId] = [];
+      score[user.socketId][0] = 0;
+
+      let i = 1;
+      questions.forEach((question: Question) => {
+        const answer = userAnswers.find((userAnswer: UserAnswers) => userAnswer.question.id == question.id);
+        score[user.socketId][i] = 0;
+
+        if(!answer) {
+          return;
+        }
+
+        if(answer.question.correctAnswer === answer.chosenAnswer) {
+          score[user.socketId][i] = maxPoints * answer.reactionTime / lobby.questionDuration;
+        } 
+
+        score[user.socketId][0] += score[user.socketId][i];
+
+        i++;
+      })
+    });
+    return score;
   }
 }

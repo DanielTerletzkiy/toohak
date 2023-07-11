@@ -71,4 +71,9 @@ export class LobbiesController {
     nextQuestions(@Req() request: RequestPlayer, @Param('id') id: string) {
         return this.lobbiesService.getNextQuestion(id, request.player);
     }
+
+    @Get(':id/scoreboard')
+    getScoreboard(@Param('id') id: string) {
+        return this.lobbiesService.getScoreboard(id);
+    }
 }
