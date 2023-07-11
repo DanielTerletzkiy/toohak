@@ -46,7 +46,13 @@ function onCreate() {
               elevation="4"
             >
               <template v-slot:suffix>
-                <d-icon-button :size="30" active color="primary" name="arrow-right" @click="onJoin" />
+                <d-icon-button
+                  :size="30"
+                  active
+                  color="primary"
+                  name="arrow-right"
+                  @click="onJoin"
+                />
               </template>
             </d-textfield>
           </d-column>
@@ -55,11 +61,12 @@ function onCreate() {
           <d-card-subtitle class="font-size-medium font-weight-bold">
             Be the Host!
           </d-card-subtitle>
-          <d-button class="ma-2" color="primary" glow @click="onCreate">
-            create lobby
-          </d-button>
-          <d-row class="ma-2" gap>
-            <d-textfield
+          <d-column elevation>
+            <d-button class="ma-2" color="primary" glow @click="onCreate">
+              create lobby
+            </d-button>
+            <d-row class="pa-2" gap>
+              <d-textfield
                 v-model="questionAmount"
                 color="primary"
                 filled
@@ -67,8 +74,10 @@ function onCreate() {
                 label="Amount"
                 type="number"
                 elevation="4"
-            />
-            <d-textfield
+              >
+                <template v-slot:suffix> questions</template>
+              </d-textfield>
+              <d-textfield
                 v-model="questionDuration"
                 color="primary"
                 filled
@@ -76,8 +85,11 @@ function onCreate() {
                 label="Duration"
                 type="number"
                 elevation="4"
-            />
-          </d-row>
+              >
+                <template v-slot:suffix> milliseconds</template>
+              </d-textfield>
+            </d-row>
+          </d-column>
         </d-column>
       </d-column>
     </d-row>
