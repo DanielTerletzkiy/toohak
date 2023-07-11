@@ -18,6 +18,8 @@ import {
   QuestionChangePlayer,
 } from '../../shared/types/SocketData';
 import { GatewayGateway } from '../gateway/gateway.gateway';
+import { UserAnswers } from 'src/user-answers/entities/user-answers.entity';
+import { Question } from 'src/questions/entities/question.entity';
 
 @Injectable()
 export class LobbiesService {
@@ -243,5 +245,29 @@ export class LobbiesService {
     );
 
     return question;
+  }
+
+  async getScoreboard(id: Lobby['id']) {
+    const lobby = await this.findOne(id);
+    const users = lobby.players;
+    const maxPoints = 1000;
+
+    if (!lobby) {
+      return;
+    }
+
+    let score: { [key: string]: number } = {};
+    users.forEach((user: User) => {
+      const userAnswers: UserAnswers[] = lobby.userAnswers.filter((userAnswer: UserAnswers) => userAnswer.user.socketId === user.socketId);
+      score[user.socketId] = 0;
+
+      userAnswers.forEach((userAnswer: UserAnswers) => {
+        if(userAnswer.question.correctAnswer === userAnswer.chosenAnswer) {
+          score[userAnswer.user.socketId] += maxPoints * userAnswer.reactionTime / lobby.questionDuration;
+        }
+      });
+    });
+
+    return score;
   }
 }
