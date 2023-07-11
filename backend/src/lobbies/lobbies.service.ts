@@ -257,30 +257,39 @@ export class LobbiesService {
       return;
     }
 
-    let score: { [key: string]: number[] } = {};
+    let score: { [key: string]: { round: number, score: number, time: number | string }[] } = {};
+    let totalScore: { [key: string]: number } = {};
     users.forEach((user: User) => {
       const userAnswers: UserAnswers[] = lobby.userAnswers.filter((userAnswer: UserAnswers) => userAnswer.user.socketId === user.socketId);
+      totalScore[user.socketId] = 0;
       score[user.socketId] = [];
-      score[user.socketId][0] = 0;
 
-      let i = 1;
+      let round = 1;
       questions.forEach((question: Question) => {
         const answer = userAnswers.find((userAnswer: UserAnswers) => userAnswer.question.id == question.id);
-        score[user.socketId][i] = 0;
+        let value = 0;
 
         if(!answer) {
+          score[user.socketId].push({ round: round, score: 0, time: "-" });
           return;
         }
 
         if(answer.question.correctAnswer === answer.chosenAnswer) {
-          score[user.socketId][i] = maxPoints * answer.reactionTime / lobby.questionDuration;
+          value = maxPoints * answer.reactionTime / lobby.questionDuration;
         } 
 
-        score[user.socketId][0] += score[user.socketId][i];
+        score[user.socketId].push({ round: round, score: value, time: answer.reactionTime });
+        totalScore[user.socketId] += value;
 
-        i++;
+        round++;
       })
     });
-    return score;
+
+    const sortedTotalScore = Object.entries(totalScore)
+    .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
+    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+    // return {totalScore: sortedTotalScore, score};
+    return sortedTotalScore;
   }
 }
