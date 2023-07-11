@@ -250,24 +250,37 @@ export class LobbiesService {
   async getScoreboard(id: Lobby['id']) {
     const lobby = await this.findOne(id);
     const users = lobby.players;
+    const questions = lobby.questions;
     const maxPoints = 1000;
 
     if (!lobby) {
       return;
     }
 
-    let score: { [key: string]: number } = {};
+    let score: { [key: string]: number[] } = {};
     users.forEach((user: User) => {
       const userAnswers: UserAnswers[] = lobby.userAnswers.filter((userAnswer: UserAnswers) => userAnswer.user.socketId === user.socketId);
-      score[user.socketId] = 0;
+      score[user.socketId] = [];
+      score[user.socketId][0] = 0;
 
-      userAnswers.forEach((userAnswer: UserAnswers) => {
-        if(userAnswer.question.correctAnswer === userAnswer.chosenAnswer) {
-          score[userAnswer.user.socketId] += maxPoints * userAnswer.reactionTime / lobby.questionDuration;
+      let i = 1;
+      questions.forEach((question: Question) => {
+        const answer = userAnswers.find((userAnswer: UserAnswers) => userAnswer.question.id == question.id);
+        score[user.socketId][i] = 0;
+
+        if(!answer) {
+          return;
         }
-      });
-    });
 
+        if(answer.question.correctAnswer === answer.chosenAnswer) {
+          score[user.socketId][i] = maxPoints * answer.reactionTime / lobby.questionDuration;
+        } 
+
+        score[user.socketId][0] += score[user.socketId][i];
+
+        i++;
+      })
+    });
     return score;
   }
 }
