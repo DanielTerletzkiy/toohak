@@ -21,9 +21,9 @@ import { NameGeneratorModule } from './name-generator/name-generator.module';
       synchronize: true, //TODO: remove on prod
     }),
     GatewayModule,
+    LobbiesModule,
     QuestionsModule,
     UsersModule,
-    LobbiesModule,
     UserAnswersModule,
     MiddlewareModule,
     NameGeneratorModule,

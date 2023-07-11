@@ -1,14 +1,16 @@
-import { Module } from '@nestjs/common';
-import { LobbiesService } from './lobbies.service';
-import { Lobby } from './entities/lobby.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { LobbiesController } from './lobbies.controller';
-import { QuestionsModule } from '../questions/questions.module';
-import { GatewayModule } from '../gateway/gateway.module';
+import {forwardRef, Module} from '@nestjs/common';
+import {LobbiesService} from './lobbies.service';
+import {Lobby} from './entities/lobby.entity';
+import {TypeOrmModule} from '@nestjs/typeorm';
+import {LobbiesController} from './lobbies.controller';
+import {QuestionsModule} from '../questions/questions.module';
+import {GatewayModule} from '../gateway/gateway.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Lobby]), QuestionsModule, GatewayModule],
-  providers: [LobbiesService],
-  controllers: [LobbiesController],
+    imports: [forwardRef(() => GatewayModule), TypeOrmModule.forFeature([Lobby]), QuestionsModule],
+    providers: [LobbiesService],
+    controllers: [LobbiesController],
+    exports: [LobbiesService]
 })
-export class LobbiesModule {}
+export class LobbiesModule {
+}

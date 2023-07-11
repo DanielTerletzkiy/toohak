@@ -1,6 +1,6 @@
 import {
   BadRequestException,
-  ConflictException,
+  ConflictException, forwardRef, Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -24,20 +24,20 @@ export class LobbiesService {
   constructor(
     @InjectRepository(Lobby) private lobbyRepository: Repository<Lobby>,
     private questionsService: QuestionsService,
+    @Inject(forwardRef(() => GatewayService))
     private gatewayService: GatewayService,
-    private gateway: GatewayGateway,
   ) {}
 
-  async create(createLobbyDto: CreateLobbyDto) {
-    const openLobby = await this.hostHasOpenLobby(createLobbyDto.host);
+  async create(createLobbyDto: CreateLobbyDto,questionAmount = 10) {
+    const openLobby = await this.hostHasOpenLobby(createLobbyDto.host.socketId);
     if (!!openLobby) {
       throw new ConflictException(`Host still has open lobby: ${openLobby}`);
     }
     const lobby = await this.lobbyRepository.save(createLobbyDto);
 
-    await this.setQuestions(lobby.id);
+    await this.setQuestions(lobby.id, questionAmount);
 
-    const socketClient = this.gateway.socketUsers.get(
+    const socketClient = this.gatewayService.socketUsers.get(
       createLobbyDto.host.socketId,
     );
     if (!socketClient) {
@@ -45,14 +45,15 @@ export class LobbiesService {
     }
     socketClient.join(lobby.id);
     this.gatewayService.emit(null, lobby.id, SocketAction.LobbyUpdate);
+    return lobby;
   }
 
-  hostHasOpenLobby(user: User) {
+  hostHasOpenLobby(socketId: User['socketId']) {
     return this.lobbyRepository
       .findOneOrFail({
         where: {
           host: {
-            socketId: user.socketId,
+            socketId,
           },
           closedDate: IsNull(),
         },
@@ -80,7 +81,7 @@ export class LobbiesService {
   }
 
   async joinLobby(id: Lobby['id'], user: User) {
-    const socketClient = this.gateway.socketUsers.get(user.socketId);
+    const socketClient = this.gatewayService.socketUsers.get(user.socketId);
     if (!socketClient) {
       throw new BadRequestException(`This client is not in the socket array`);
     }
@@ -108,6 +109,13 @@ export class LobbiesService {
     }
 
     lobby.players.push(user);
+    return this.lobbyRepository.save(lobby);
+  }
+
+  async closeLobby(id: Lobby['id']){
+    const lobby = await this.findOneActive(id);
+    lobby.closedDate = new Date();
+
     return this.lobbyRepository.save(lobby);
   }
 

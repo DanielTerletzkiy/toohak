@@ -18,6 +18,7 @@ export class GatewayService {
     ...args: string[]
   ) {
     const address = [action, ...args].join('/');
+    console.log({address})
     return this.socket.server.to(roomId).emit(address, data);
   }
 
@@ -36,5 +37,9 @@ export class GatewayService {
     const players = await Promise.all(promises);
 
     this.emit(players, id, SocketAction.LobbyUpdate);
+  }
+
+  get socketUsers(){
+    return this.socket.socketUsers;
   }
 }

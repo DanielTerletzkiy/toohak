@@ -11,12 +11,15 @@ const { join: joinLobby, create: createLobby } = lobbyStore;
 
 const lobbyId = ref("");
 
+const questionAmount = ref(10);
+const questionDuration = ref(30000);
+
 function onJoin() {
   joinLobby(lobbyId.value);
 }
 
 function onCreate() {
-  createLobby();
+  createLobby(questionAmount.value, questionDuration.value);
 }
 </script>
 
@@ -55,6 +58,26 @@ function onCreate() {
           <d-button class="ma-2" color="primary" glow @click="onCreate">
             create lobby
           </d-button>
+          <d-row class="ma-2" gap>
+            <d-textfield
+                v-model="questionAmount"
+                color="primary"
+                filled
+                outlined
+                label="Amount"
+                type="number"
+                elevation="4"
+            />
+            <d-textfield
+                v-model="questionDuration"
+                color="primary"
+                filled
+                outlined
+                label="Duration"
+                type="number"
+                elevation="4"
+            />
+          </d-row>
         </d-column>
       </d-column>
     </d-row>

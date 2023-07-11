@@ -22,7 +22,7 @@ export const useLobbyStore = defineStore("lobbyStore", () => {
     lobby.value = joinedLobby;
   }
 
-  async function create() {
+  async function create(questionAmount = 10, questionDuration = 30000) {
     const globalStore = useGlobalStore();
     const { canHost } = storeToRefs(globalStore);
 
@@ -30,7 +30,7 @@ export const useLobbyStore = defineStore("lobbyStore", () => {
       return;
     }
 
-    const createdLobby = await ApiFetchService.fetch<Lobby>(Method.Post, `/lobbies`);
+    const createdLobby = await ApiFetchService.fetch<Lobby>(Method.Post, `/lobbies`, {questionAmount,questionDuration});
 
     lobbyId.value = createdLobby.id;
     lobby.value = createdLobby;

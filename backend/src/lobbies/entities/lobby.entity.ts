@@ -40,10 +40,14 @@ export class Lobby {
   @Column({ default: 0 })
   activeQuestion: number;
 
+  @Column({ default: 30000 })
+  questionDuration: number;
+
   getNextQuestion(): Question {
     if (this.activeQuestion < this.questions.length) {
+      const question = this.questions[this.activeQuestion];
       this.activeQuestion++;
-      return this.questions[this.activeQuestion];
+      return question;
     }
     return null;
   }

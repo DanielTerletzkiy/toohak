@@ -10,6 +10,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { GatewayService } from './gateway.service';
 import { forwardRef, Inject } from '@nestjs/common';
+import {LobbiesService} from "../lobbies/lobbies.service";
 
 @WebSocketGateway(3080, {
   cors: {
@@ -22,6 +23,8 @@ export class GatewayGateway
   constructor(
     @Inject(forwardRef(() => GatewayService))
     private gatewayService: GatewayService,
+    @Inject(forwardRef(() => LobbiesService))
+    private lobbiesService: LobbiesService,
   ) {}
 
   @WebSocketServer()
@@ -35,9 +38,15 @@ export class GatewayGateway
     this.socketUsers.set(playerId, client);
   }
 
-  public handleDisconnect(@ConnectedSocket() client: Socket): void {
+  public async handleDisconnect(@ConnectedSocket() client: Socket): Promise<void> {
     const playerId = client.handshake.query.playerId as string;
     console.log({ disconnect: playerId });
+
+    const openLobby = await this.lobbiesService.hostHasOpenLobby(playerId);
+    if(typeof openLobby === "string"){
+      await this.lobbiesService.closeLobby(openLobby)
+    }
+
     this.socketUsers.delete(playerId);
   }
 
