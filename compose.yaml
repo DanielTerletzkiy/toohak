@@ -3,7 +3,6 @@ services:
   backend:
     container_name: toohak
     ports:
-      - "80:80"
       - "3000:3000"
       - "3080:3080"
     build:

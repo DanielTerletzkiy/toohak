@@ -22,7 +22,7 @@ import {UserAnswer} from 'src/user-answers/entities/user-answer.entity';
 import {Question} from 'src/questions/entities/question.entity';
 import {LobbyWorkerService} from '../lobby-worker/lobby-worker.service';
 import {LobbyState} from '../../shared/enums/Lobby';
-import {Scoreboard} from '../../shared/types/Score';
+import {ScoreRounds, ScoreTotal} from '../../shared/types/Score';
 
 @Injectable()
 export class LobbiesService {
@@ -135,7 +135,8 @@ export class LobbiesService {
     async closeLobby(id: Lobby['id']) {
         const lobby = await this.findOneActive(id);
         lobby.closedDate = new Date();
-        await this.setState(id, LobbyState.Completed);
+        await this.setState(id, LobbyState.Closed);
+        this.gatewayService.closeRoom(id)
 
         return this.lobbyRepository.save(lobby);
     }
@@ -146,7 +147,8 @@ export class LobbiesService {
 
         lobby.state = state;
 
-        return this.lobbyRepository.save(lobby);
+        await this.lobbyRepository.save(lobby);
+        this.gatewayService.emit(state, id, SocketAction.LobbyState);
     }
 
     async isHosting(id: Lobby['id'], user: User) {
@@ -195,7 +197,9 @@ export class LobbiesService {
             },
             relations: {
                 questions: true,
-                userAnswers: true,
+                userAnswers: {
+                    question: true,
+                },
             },
         });
     }
@@ -292,39 +296,41 @@ export class LobbiesService {
         const questions = lobby.questions;
         const maxPoints = 1000;
 
-        const score: Scoreboard = {};
+        let score: ScoreRounds = {};
+        let totalScore: ScoreTotal = {};
+
         users.forEach((user: User) => {
-            const userAnswers: UserAnswer[] = lobby.userAnswers.filter(
-                (userAnswer: UserAnswer) => userAnswer.user.socketId === user.socketId,
-            );
+            const userAnswers: UserAnswer[] = lobby.userAnswers.filter((userAnswer: UserAnswer) => userAnswer.user.socketId === user.socketId);
+            totalScore[user.socketId] = 0;
             score[user.socketId] = [];
-            score[user.socketId][0] = 0;
 
-            let i = 1;
+            let round = 1;
             questions.forEach((question: Question) => {
-                const answer = userAnswers.find(
-                    (userAnswer: UserAnswer) => userAnswer.question.id == question.id,
-                );
-                score[user.socketId][i] = 0;
+                const answer = userAnswers.find((userAnswer: UserAnswer) => userAnswer.question.id == question.id);
+                let value = 0;
 
-                if (!answer) {
+                if(!answer) {
+                    score[user.socketId].push({ round: round, score: 0, time: "-" });
                     return;
                 }
 
-                if (answer.question.correctAnswer === answer.chosenAnswer) {
-                    score[user.socketId][i] =
-                        (maxPoints * answer.reactionTime) / lobby.questionDuration;
+                if(answer.question.correctAnswer === answer.chosenAnswer) {
+                    value = maxPoints * answer.reactionTime / lobby.questionDuration;
                 }
 
-                score[user.socketId][0] += score[user.socketId][i];
+                score[user.socketId].push({ round: round, score: value, time: answer.reactionTime });
+                totalScore[user.socketId] += value;
 
-                i++;
-            });
+                round++;
+            })
         });
 
-        console.log(score);
+        const sortedTotalScore = Object.entries(totalScore)
+            .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
+            .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
         this.gatewayService.emit(score, id, SocketAction.ScoreboardUpdate);
 
-        return score;
+        return {totalScore: sortedTotalScore, score};
     }
 }

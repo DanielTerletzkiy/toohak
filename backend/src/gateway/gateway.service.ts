@@ -12,7 +12,7 @@ export class GatewayService {
   ) {}
 
   emit(
-    data: object,
+    data: unknown,
     roomId: Lobby['id'],
     action: SocketAction,
     ...args: string[]
@@ -41,5 +41,9 @@ export class GatewayService {
 
   get socketUsers(){
     return this.socket.socketUsers;
+  }
+
+  closeRoom(id: Lobby['id']) {
+    return this.socket.server.in(id).socketsLeave(id);
   }
 }

@@ -8,7 +8,7 @@ import {useGlobalStore} from "../stores/globalStore.ts";
 import {useSocketListener} from "../composables/socket.composable.ts";
 import {SocketAction} from "../../../backend/shared/enums/Socket.ts";
 import {watch} from "vue";
-import {Scoreboard} from "../../../backend/shared/types/Score.ts";
+import {ScoreRounds} from "../../../backend/shared/types/Score.ts";
 import {LobbyState} from "../../../backend/shared/enums/Lobby.ts";
 import QrcodeVue from 'qrcode.vue'
 
@@ -56,13 +56,43 @@ watch(isHost, () => {
   );
 });
 
-function onScoreboardUpdate(scoreboard: Scoreboard) {
+function onScoreboardUpdate(scoreboard: ScoreRounds) {
   console.log({scoreboard})
 }
 
 useSocketListener(
     onScoreboardUpdate,
     SocketAction.ScoreboardUpdate
+);
+
+async function onStateChange(state: LobbyState){
+  await fetchLobby();
+  if(!lobby.value){
+    return;
+  }
+  switch (state){
+    case LobbyState.Idle:
+      break;
+    case LobbyState.Started:
+      break;
+    case LobbyState.Completed:
+      break;
+    case LobbyState.Closed:
+      if(lobby.value.closedDate){
+        await router.replace("/");
+      }
+      break;
+    case LobbyState.Scoreboard:
+      break;
+    case LobbyState.Question:
+      break;
+
+  }
+}
+
+useSocketListener(
+    onStateChange,
+    SocketAction.LobbyState
 );
 
 useSocketListener(fetchLobby, SocketAction.LobbyUpdate);
