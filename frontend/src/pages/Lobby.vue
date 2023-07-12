@@ -25,6 +25,10 @@ const questionStore = useQuestionStore();
 const {id, questionText, answers, correctAnswer, progress} = storeToRefs(questionStore);
 const {startCountdown} = questionStore;
 
+function copyId() {
+  navigator.clipboard.writeText(lobbyId.value)
+}
+
 function onQuestionChange(
     questionData: QuestionChangePlayer & QuestionChangeHost
 ) {
@@ -65,13 +69,13 @@ useSocketListener(
     SocketAction.ScoreboardUpdate
 );
 
-async function onStateChange(state: LobbyState){
+async function onStateChange(state: LobbyState) {
   console.log({state})
   await fetchLobby();
-  if(!lobby.value){
+  if (!lobby.value) {
     return;
   }
-  switch (state){
+  switch (state) {
     case LobbyState.Idle:
       break;
     case LobbyState.Started:
@@ -79,7 +83,7 @@ async function onStateChange(state: LobbyState){
     case LobbyState.Completed:
       break;
     case LobbyState.Closed:
-      if(lobby.value.closedDate){
+      if (lobby.value.closedDate) {
         await router.replace("/");
       }
       break;
@@ -111,20 +115,31 @@ useSocketListener(fetchLobby, SocketAction.LobbyUpdate);
   </d-column>
   <d-card v-if="isHost && lobby" class="fixed host">
     <d-card-title elevation="2">
-      Host Tools
+      <d-icon name="qrcode-scan" :size="30"/>Lobby Info
     </d-card-title>
     <d-card-subtitle v-if="false">
       ID:
       <pre>{{ lobbyId }}</pre>
     </d-card-subtitle>
     <d-row class="pa-2">
-      <d-card background-color="#fff" class="pa-2">
-        <QrcodeVue render-as="svg" :size="200" :value="url"></QrcodeVue>
-      </d-card>
+      <d-tooltip position="left">
+        <d-card root-tag="d-button" background-color="#fff" @click="copyId">
+          <QrcodeVue render-as="svg" :size="300" :margin="2" :value="url"></QrcodeVue>
+        </d-card>
+        <template v-slot:tooltip>
+          Copy ID
+        </template>
+      </d-tooltip>
     </d-row>
     <d-row class="pa-2" elevation="n1">
-      <d-button v-if="lobby.state === LobbyState.Idle" filled color="primary" block @click="start">
+      <d-button v-if="lobby.state === LobbyState.Idle" :disabled="!lobby.players.length" filled color="primary" block @click="start">
         Start Lobby
+        <template v-slot:prefix>
+          <d-icon name="rocket" icon-style="monochrome" :size="30"/>
+        </template>
+        <template v-slot:suffix>
+          <d-icon style="transform: scale(-1, 1)" name="rocket" icon-style="monochrome" :size="30"/>
+        </template>
       </d-button>
     </d-row>
   </d-card>
