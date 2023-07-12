@@ -14,12 +14,12 @@ export const useLobbyStore = defineStore("lobbyStore", () => {
       return;
     }
 
-    const joinedLobby = await ApiFetchService.fetch<Lobby>(Method.Post, `/lobbies/join/${id}`);
+    const joinedLobby = await ApiFetchService.fetch<boolean>(Method.Post, `/lobbies/${id}/join`);
     if(!joinedLobby){
       return;
     }
     lobbyId.value = id;
-    lobby.value = joinedLobby;
+    await fetchLobby();
   }
 
   async function create(questionAmount = 10, questionDuration = 30000) {
@@ -33,7 +33,7 @@ export const useLobbyStore = defineStore("lobbyStore", () => {
     const createdLobby = await ApiFetchService.fetch<Lobby>(Method.Post, `/lobbies`, {questionAmount,questionDuration});
 
     lobbyId.value = createdLobby.id;
-    lobby.value = createdLobby;
+    await fetchLobby();
     return createdLobby;
   }
 

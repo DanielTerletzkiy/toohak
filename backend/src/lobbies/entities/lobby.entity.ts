@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { UserAnswers } from '../../user-answers/entities/user-answers.entity';
 import { Question } from 'src/questions/entities/question.entity';
+import { LobbyState } from '../../../shared/enums/Lobby';
 
 @Entity()
 export class Lobby {
@@ -23,6 +24,9 @@ export class Lobby {
   @Column({ type: 'datetime', nullable: true })
   closedDate: Date;
 
+  @Column({ type: 'datetime', nullable: true })
+  activeQuestionStart: Date;
+
   @ManyToMany(() => User, (user) => user.lobbies, { eager: true })
   @JoinTable()
   players: User[];
@@ -33,7 +37,7 @@ export class Lobby {
   @ManyToOne(() => User, (user) => user.hostedLobbies, { eager: true })
   host: User;
 
-  @ManyToMany(() => Question, (question) => question.lobbies, { eager: true })
+  @ManyToMany(() => Question, (question) => question.lobbies)
   @JoinTable()
   questions: Question[];
 
@@ -43,10 +47,14 @@ export class Lobby {
   @Column({ default: 30000 })
   questionDuration: number;
 
+  @Column({ enum: LobbyState, default: LobbyState.Idle })
+  state: LobbyState;
+
   getNextQuestion(): Question {
     if (this.activeQuestion < this.questions.length) {
       const question = this.questions[this.activeQuestion];
       this.activeQuestion++;
+      this.activeQuestionStart = new Date();
       return question;
     }
     return null;

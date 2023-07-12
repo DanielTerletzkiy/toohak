@@ -1,8 +1,9 @@
 import {
   BadRequestException,
-  ConflictException, forwardRef, Inject,
+  ConflictException,
+  forwardRef,
+  Inject,
   Injectable,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, Repository } from 'typeorm';
@@ -17,9 +18,11 @@ import {
   QuestionChangeHost,
   QuestionChangePlayer,
 } from '../../shared/types/SocketData';
-import { GatewayGateway } from '../gateway/gateway.gateway';
 import { UserAnswers } from 'src/user-answers/entities/user-answers.entity';
 import { Question } from 'src/questions/entities/question.entity';
+import { LobbyWorkerService } from '../lobby-worker/lobby-worker.service';
+import { LobbyState } from '../../shared/enums/Lobby';
+import { Scoreboard } from '../../shared/types/Score';
 
 @Injectable()
 export class LobbiesService {
@@ -28,9 +31,11 @@ export class LobbiesService {
     private questionsService: QuestionsService,
     @Inject(forwardRef(() => GatewayService))
     private gatewayService: GatewayService,
+    @Inject(forwardRef(() => LobbyWorkerService))
+    private lobbyWorkerService: LobbyWorkerService,
   ) {}
 
-  async create(createLobbyDto: CreateLobbyDto,questionAmount = 10) {
+  async create(createLobbyDto: CreateLobbyDto, questionAmount = 10) {
     const openLobby = await this.hostHasOpenLobby(createLobbyDto.host.socketId);
     if (!!openLobby) {
       throw new ConflictException(`Host still has open lobby: ${openLobby}`);
@@ -88,7 +93,6 @@ export class LobbiesService {
       throw new BadRequestException(`This client is not in the socket array`);
     }
     socketClient.join(id);
-    this.gatewayService.emit(null, id, SocketAction.LobbyUpdate);
 
     const lobby = await this.findOneActive(id);
     if (!lobby) {
@@ -98,10 +102,10 @@ export class LobbiesService {
       throw new ConflictException(`This player is the lobby host`);
     }
     if (lobby.players.find((player) => player.socketId === user.socketId)) {
-      return lobby;
+      return;
       /*throw new ConflictException(
-              `This player is already participating in this lobby`,
-            );*/
+                                                              `This player is already participating in this lobby`,
+                                                            );*/
     }
     const openLobby = await this.playerHasOpenLobby(user);
     if (!!openLobby) {
@@ -111,12 +115,34 @@ export class LobbiesService {
     }
 
     lobby.players.push(user);
+    await this.lobbyRepository.save(lobby);
+    this.gatewayService.emit(null, id, SocketAction.LobbyUpdate);
+    return true;
+  }
+
+  async startLobby(id: Lobby['id']) {
+    const lobby = await this.findOneActive(id);
+    if (!lobby) {
+      throw new ConflictException(`This lobby does not exist (anymore)`);
+    }
+
+    await this.lobbyRepository.save(lobby);
+    await this.lobbyWorkerService.startLobby(lobby.id);
+    return true;
+  }
+
+  async closeLobby(id: Lobby['id']) {
+    const lobby = await this.findOneActive(id);
+    lobby.closedDate = new Date();
+    await this.setState(id, LobbyState.Completed);
+
     return this.lobbyRepository.save(lobby);
   }
 
-  async closeLobby(id: Lobby['id']){
-    const lobby = await this.findOneActive(id);
-    lobby.closedDate = new Date();
+  async setState(id: Lobby['id'], state: LobbyState) {
+    const lobby = await this.findOne(id);
+
+    lobby.state = state;
 
     return this.lobbyRepository.save(lobby);
   }
@@ -160,6 +186,18 @@ export class LobbiesService {
     });
   }
 
+  findOneWithQuestionData(id: Lobby['id']) {
+    return this.lobbyRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        questions: true,
+        userAnswers: true,
+      },
+    });
+  }
+
   findOneActive(id: Lobby['id']) {
     return this.lobbyRepository.findOne({
       where: {
@@ -195,17 +233,11 @@ export class LobbiesService {
     return this.lobbyRepository.save(lobby);
   }
 
-  async getNextQuestion(id: Lobby['id'], player: User) {
-    const lobby = await this.findOne(id);
+  async nextQuestion(id: Lobby['id']) {
+    const lobby = await this.findOneWithQuestionData(id);
 
     if (!lobby) {
       return;
-    }
-
-    if (lobby.host.socketId !== player.socketId) {
-      throw new UnauthorizedException(
-        'This user is not the host of this lobby',
-      );
     }
 
     const question = lobby.getNextQuestion();
@@ -248,48 +280,48 @@ export class LobbiesService {
   }
 
   async getScoreboard(id: Lobby['id']) {
-    const lobby = await this.findOne(id);
-    const users = lobby.players;
-    const questions = lobby.questions;
-    const maxPoints = 1000;
-
+    const lobby = await this.findOneWithQuestionData(id);
     if (!lobby) {
       return;
     }
 
-    let score: { [key: string]: { round: number, score: number, time: number | string }[] } = {};
-    let totalScore: { [key: string]: number } = {};
+    const users = lobby.players;
+    const questions = lobby.questions;
+    const maxPoints = 1000;
+
+    const score: Scoreboard = {};
     users.forEach((user: User) => {
-      const userAnswers: UserAnswers[] = lobby.userAnswers.filter((userAnswer: UserAnswers) => userAnswer.user.socketId === user.socketId);
-      totalScore[user.socketId] = 0;
+      const userAnswers: UserAnswers[] = lobby.userAnswers.filter(
+        (userAnswer: UserAnswers) => userAnswer.user.socketId === user.socketId,
+      );
       score[user.socketId] = [];
+      score[user.socketId][0] = 0;
 
-      let round = 1;
+      let i = 1;
       questions.forEach((question: Question) => {
-        const answer = userAnswers.find((userAnswer: UserAnswers) => userAnswer.question.id == question.id);
-        let value = 0;
+        const answer = userAnswers.find(
+          (userAnswer: UserAnswers) => userAnswer.question.id == question.id,
+        );
+        score[user.socketId][i] = 0;
 
-        if(!answer) {
-          score[user.socketId].push({ round: round, score: 0, time: "-" });
+        if (!answer) {
           return;
         }
 
-        if(answer.question.correctAnswer === answer.chosenAnswer) {
-          value = maxPoints * answer.reactionTime / lobby.questionDuration;
-        } 
+        if (answer.question.correctAnswer === answer.chosenAnswer) {
+          score[user.socketId][i] =
+            (maxPoints * answer.reactionTime) / lobby.questionDuration;
+        }
 
-        score[user.socketId].push({ round: round, score: value, time: answer.reactionTime });
-        totalScore[user.socketId] += value;
+        score[user.socketId][0] += score[user.socketId][i];
 
-        round++;
-      })
+        i++;
+      });
     });
 
-    const sortedTotalScore = Object.entries(totalScore)
-    .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
-    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+    console.log(score);
+    this.gatewayService.emit(score, id, SocketAction.ScoreboardUpdate);
 
-    // return {totalScore: sortedTotalScore, score};
-    return sortedTotalScore;
+    return score;
   }
 }

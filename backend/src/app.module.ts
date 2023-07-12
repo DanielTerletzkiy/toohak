@@ -10,6 +10,8 @@ import { UserAnswersModule } from './user-answers/user-answers.module';
 import { MiddlewareModule } from './middleware/middleware.module';
 import { UserInjectMiddleware } from './middleware/user-inject.middleware';
 import { NameGeneratorModule } from './name-generator/name-generator.module';
+import { LobbyWorkerModule } from './lobby-worker/lobby-worker.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { NameGeneratorModule } from './name-generator/name-generator.module';
       autoLoadEntities: true,
       synchronize: true, //TODO: remove on prod
     }),
+    ScheduleModule.forRoot(),
     GatewayModule,
     LobbiesModule,
     QuestionsModule,
@@ -27,6 +30,7 @@ import { NameGeneratorModule } from './name-generator/name-generator.module';
     UserAnswersModule,
     MiddlewareModule,
     NameGeneratorModule,
+    LobbyWorkerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
