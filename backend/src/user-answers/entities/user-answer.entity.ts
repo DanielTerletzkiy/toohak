@@ -10,7 +10,7 @@ import {
 import { Answer } from '../../../shared/enums/Answer';
 
 @Entity()
-export class UserAnswers {
+export class UserAnswer {
   @PrimaryGeneratedColumn()
   id: number;
 

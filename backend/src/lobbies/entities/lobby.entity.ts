@@ -9,7 +9,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserAnswers } from '../../user-answers/entities/user-answers.entity';
+import { UserAnswer } from '../../user-answers/entities/user-answer.entity';
 import { Question } from 'src/questions/entities/question.entity';
 import { LobbyState } from '../../../shared/enums/Lobby';
 
@@ -31,8 +31,8 @@ export class Lobby {
   @JoinTable()
   players: User[];
 
-  @OneToMany(() => UserAnswers, (userAnswers) => userAnswers.lobby)
-  userAnswers: UserAnswers[];
+  @OneToMany(() => UserAnswer, (userAnswers) => userAnswers.lobby)
+  userAnswers: UserAnswer[];
 
   @ManyToOne(() => User, (user) => user.hostedLobbies, { eager: true })
   host: User;

@@ -18,7 +18,7 @@ import {
   QuestionChangeHost,
   QuestionChangePlayer,
 } from '../../shared/types/SocketData';
-import { UserAnswers } from 'src/user-answers/entities/user-answers.entity';
+import { UserAnswer } from 'src/user-answers/entities/user-answer.entity';
 import { Question } from 'src/questions/entities/question.entity';
 import { LobbyWorkerService } from '../lobby-worker/lobby-worker.service';
 import { LobbyState } from '../../shared/enums/Lobby';
@@ -291,8 +291,8 @@ export class LobbiesService {
 
     const score: Scoreboard = {};
     users.forEach((user: User) => {
-      const userAnswers: UserAnswers[] = lobby.userAnswers.filter(
-        (userAnswer: UserAnswers) => userAnswer.user.socketId === user.socketId,
+      const userAnswers: UserAnswer[] = lobby.userAnswers.filter(
+        (userAnswer: UserAnswer) => userAnswer.user.socketId === user.socketId,
       );
       score[user.socketId] = [];
       score[user.socketId][0] = 0;
@@ -300,7 +300,7 @@ export class LobbiesService {
       let i = 1;
       questions.forEach((question: Question) => {
         const answer = userAnswers.find(
-          (userAnswer: UserAnswers) => userAnswer.question.id == question.id,
+          (userAnswer: UserAnswer) => userAnswer.question.id == question.id,
         );
         score[user.socketId][i] = 0;
 

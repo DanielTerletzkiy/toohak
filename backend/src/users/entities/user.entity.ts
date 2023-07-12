@@ -7,7 +7,7 @@ import {
   PrimaryColumn,
 } from 'typeorm';
 import { Lobby } from '../../lobbies/entities/lobby.entity';
-import { UserAnswers } from '../../user-answers/entities/user-answers.entity';
+import { UserAnswer } from '../../user-answers/entities/user-answer.entity';
 
 @Entity()
 export class User {
@@ -23,6 +23,6 @@ export class User {
   @OneToMany(() => Lobby, (lobby) => lobby.host)
   hostedLobbies: Lobby[];
 
-  @OneToMany(() => UserAnswers, (userAnswers) => userAnswers.user)
-  userAnswers: UserAnswers[];
+  @OneToMany(() => UserAnswer, (userAnswers) => userAnswers.user)
+  userAnswers: UserAnswer[];
 }

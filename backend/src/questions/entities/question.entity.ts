@@ -1,4 +1,4 @@
-import { UserAnswers } from 'src/user-answers/entities/user-answers.entity';
+import { UserAnswer } from 'src/user-answers/entities/user-answer.entity';
 import {
   Column,
   Entity,
@@ -33,8 +33,8 @@ export class Question {
   @Column({ enum: Answer })
   correctAnswer: Answer;
 
-  @OneToMany(() => UserAnswers, (userAnswers) => userAnswers.question)
-  userAnswers: UserAnswers[];
+  @OneToMany(() => UserAnswer, (userAnswers) => userAnswers.question)
+  userAnswers: UserAnswer[];
 
   @ManyToMany(() => Lobby, (lobby) => lobby.questions)
   lobbies: Lobby[];
