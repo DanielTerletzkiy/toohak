@@ -16,7 +16,7 @@ export const useSocketListener = (
   }
 
   //onMounted(() => {
-    socket.on(address, listener);
+  socket.on(address, listener);
   //});
 
   onBeforeUnmount(() => {

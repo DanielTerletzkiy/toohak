@@ -3,7 +3,7 @@ export enum SocketAction {
   LobbyLeave = 'lobby/leave',
   LobbyUpdate = 'lobby/update',
   LobbyState = 'lobby/state',
-  AnswerVote = 'answer/vote',
+  AnswerSubmit = 'answer/submit',
   ScoreboardUpdate = 'scoreboard/update',
   HostQuestionChange = 'host/question/change',
   PlayerQuestionChange = 'player/question/change',

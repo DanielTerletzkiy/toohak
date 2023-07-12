@@ -1,4 +1,6 @@
-import {Answer} from "../enums/Answer";
+import { Answer } from '../enums/Answer';
+import { Question } from '../../src/questions/entities/question.entity';
+import { Lobby } from '../../src/lobbies/entities/lobby.entity';
 
 export type QuestionChangePlayer = {
   id: string;
@@ -15,4 +17,9 @@ export type QuestionChangeHost = {
     c: string;
     d: string;
   };
+};
+
+export type SubmitData = {
+  chosenAnswer: Answer;
+  questionId: Question['id'];
 };

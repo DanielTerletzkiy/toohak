@@ -1,12 +1,7 @@
 import { Lobby } from 'src/lobbies/entities/lobby.entity';
 import { Question } from 'src/questions/entities/question.entity';
 import { User } from 'src/users/entities/user.entity';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Answer } from '../../../shared/enums/Answer';
 
 @Entity()

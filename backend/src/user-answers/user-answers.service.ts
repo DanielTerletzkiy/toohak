@@ -1,26 +1,66 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Question } from '../questions/entities/question.entity';
+import { Repository } from 'typeorm';
+import { UserAnswer } from './entities/user-answer.entity';
 import { CreateUserAnswersDto } from './dto/create-user-answere.dto';
-import { UpdateUserAnswersDto } from './dto/update-user-answere.dto';
+import { User } from '../users/entities/user.entity';
+import { Lobby } from '../lobbies/entities/lobby.entity';
+import { Answer } from '../../shared/enums/Answer';
 
 @Injectable()
 export class UserAnswersService {
-  create(createUserAnswersDto: CreateUserAnswersDto) {
-    return 'This action adds a new userAnswers';
+  constructor(
+    @InjectRepository(UserAnswer)
+    private userAnswerRepository: Repository<UserAnswer>,
+  ) {}
+
+  async create(createUserAnswersDto: CreateUserAnswersDto) {
+    const isDuplicate = await this.isDuplicate(createUserAnswersDto);
+    if (isDuplicate) {
+      return;
+    }
+    return this.userAnswerRepository.save(createUserAnswersDto);
   }
 
-  findAll() {
-    return `This action returns all userAnswers`;
+  async logAnswer(
+    lobby: Lobby,
+    user: User,
+    questionId: Question['id'],
+    chosenAnswer: Answer,
+  ) {
+    const userAnswer = new UserAnswer();
+    userAnswer.lobby = lobby;
+    userAnswer.user = user;
+
+    const question = new Question();
+    question.id = questionId;
+    userAnswer.question = question;
+
+    userAnswer.chosenAnswer = chosenAnswer;
+
+    userAnswer.reactionTime =
+      new Date().getTime() - lobby.activeQuestionStart.getTime();
+
+    return this.create(userAnswer);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} userAnswers`;
-  }
-
-  update(id: number, updateUserAnswersDto: UpdateUserAnswersDto) {
-    return `This action updates a #${id} userAnswers`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} userAnswers`;
+  async isDuplicate(createUserAnswersDto: CreateUserAnswersDto) {
+    return this.userAnswerRepository
+      .findOneOrFail({
+        where: {
+          lobby: {
+            id: createUserAnswersDto.lobby.id,
+          },
+          question: {
+            id: createUserAnswersDto.question.id,
+          },
+          user: {
+            socketId: createUserAnswersDto.user.socketId,
+          },
+        },
+      })
+      .then(() => true)
+      .catch(() => false);
   }
 }

@@ -8,5 +8,6 @@ import { UserAnswersController } from './user-answers.controller';
   imports: [TypeOrmModule.forFeature([UserAnswer])],
   providers: [UserAnswersService],
   controllers: [UserAnswersController],
+  exports: [UserAnswersService],
 })
 export class UserAnswersModule {}
