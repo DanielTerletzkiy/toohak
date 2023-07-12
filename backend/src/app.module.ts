@@ -12,15 +12,19 @@ import { UserInjectMiddleware } from './middleware/user-inject.middleware';
 import { NameGeneratorModule } from './name-generator/name-generator.module';
 import { LobbyWorkerModule } from './lobby-worker/lobby-worker.module';
 import { ScheduleModule } from '@nestjs/schedule';
-
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: 'db.sqlite',
+      database: 'db/db.sqlite',
       entities: ['dist/**/*.entity.js'],
       autoLoadEntities: true,
       synchronize: true, //TODO: remove on prod
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '../../..', 'frontend', 'dist'),
     }),
     ScheduleModule.forRoot(),
     GatewayModule,

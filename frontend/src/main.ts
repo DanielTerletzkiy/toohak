@@ -12,5 +12,6 @@ const app = createApp(App);
 app.use(pinia);
 app.use(router);
 app.use(vuelize);
-await connectToSocketIoServer()
-app.mount('#app')
+connectToSocketIoServer().then(() => {
+    app.mount('#app')
+})

@@ -1,0 +1,10 @@
+version: '3'
+services:
+  backend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - toohak_db:/app/backend/db/
+volumes:
+  toohak_db:

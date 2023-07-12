@@ -6,7 +6,8 @@ if (!localStorage.getItem("playerId")) {
   localStorage.setItem("playerId", uuid());
 }
 
-export const socket = io({
+const url = `${window.location.protocol}//${window.location.hostname}:3080`;
+export const socket = io(url,{
   query: {
     playerId: localStorage.getItem("playerId"),
   },

@@ -7,21 +7,19 @@ const {canHost} = globalStore;
 
 useWorker();
 
-console.log(globalStore)
-
 </script>
 
 <template>
   <DRoot>
-    <template v-slot:toolbar>
-      <DToolbar>
-          can host: {{canHost}}, socketId: {{globalStore.socketId}}
-      </DToolbar>
+    <template v-slot:notifications>
+      <d-notification-wrapper/>
     </template>
     <router-view></router-view>
   </DRoot>
 </template>
 
-<style scoped>
-
+<style lang="scss">
+main {
+  height: 100vh;
+}
 </style>

@@ -37,6 +37,15 @@ export const useLobbyStore = defineStore("lobbyStore", () => {
     return createdLobby;
   }
 
+  async function start() {
+    if (!lobbyId.value) {
+      return;
+    }
+
+    await ApiFetchService.fetch<boolean>(Method.Post, `/lobbies/${lobbyId.value}/start`);
+    await fetchLobby();
+  }
+
   async function fetchLobby() {
     lobby.value = await ApiFetchService.fetch<Lobby>(
       Method.Get,
@@ -55,5 +64,12 @@ export const useLobbyStore = defineStore("lobbyStore", () => {
     return lobby.value?.host.socketId === socketId.value;
   });
 
-  return { lobbyId, lobby, join, create, fetchLobby, isHost };
+  const url = computed(()=>{
+    const url = new URL(window.location.href);
+    url.pathname = "/";
+    url.searchParams.set("lobby",lobbyId.value);
+    return url.toString();
+  })
+
+  return { lobbyId, lobby, join, create, start, fetchLobby, isHost, url };
 });

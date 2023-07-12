@@ -20,7 +20,7 @@ const props = defineProps({
 
 <style scoped lang="scss">
 .wrapper {
-  $length: calc((450px*2) + 20px);
+  $length: calc((600px*2) + 20px);
   width: $length;
   height: max-content;
   overflow: hidden;

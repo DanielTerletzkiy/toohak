@@ -1,7 +1,13 @@
 <script setup lang="ts">
-import { useGlobalStore } from "../stores/globalStore.ts";
-import { useLobbyStore } from "../stores/lobbyStore.ts";
-import { ref } from "vue";
+import {useGlobalStore} from "../stores/globalStore.ts";
+import {useLobbyStore} from "../stores/lobbyStore.ts";
+import {inject, onMounted, ref} from "vue";
+import {useRoute} from "vue-router";
+import {State} from "vuelize/src/types/Vuelize.ts";
+
+const route = useRoute();
+
+const vuelize = inject("vuelize") as Vuelize
 
 const globalStore = useGlobalStore();
 const { canHost } = globalStore;
@@ -21,6 +27,15 @@ function onJoin() {
 function onCreate() {
   createLobby(questionAmount.value, questionDuration.value);
 }
+
+onMounted(()=>{
+  const lobby = route.query.lobby as string;
+  if(!lobby){
+    return;
+  }
+  lobbyId.value = lobby;
+  vuelize.notify("Injected","Prefilled lobby ID", State.Info);
+})
 </script>
 
 <template>
