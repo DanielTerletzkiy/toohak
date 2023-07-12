@@ -66,6 +66,7 @@ useSocketListener(
 );
 
 async function onStateChange(state: LobbyState){
+  console.log({state})
   await fetchLobby();
   if(!lobby.value){
     return;
