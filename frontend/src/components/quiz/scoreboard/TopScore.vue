@@ -19,6 +19,7 @@ const topScores = computed(() => {
   const data = [];
   for (const key of keys) {
     if (!lobby.value || !props.totalScores) {
+      console.log(!lobby.value || !props.totalScores, lobby.value, props.totalScores)
       continue;
     }
     try {
