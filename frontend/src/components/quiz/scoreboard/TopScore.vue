@@ -14,18 +14,25 @@ const {lobby} = storeToRefs(lobbyStore);
 
 const topScores = computed(() => {
   const keys = Object.keys(props.totalScores).slice(0, 3);
-  return keys.map((key: string) => {
+  const data = [];
+  for (const key of keys) {
     if (!lobby.value) {
-      return;
+      continue;
     }
-    //@ts-ignore
-    const user: User = lobby.value.players.find((user) => user.socketId === key);
-    const score = props.totalScores?.[key];
-    return {
-      user,
-      score,
+    try {
+
+      //@ts-ignore
+      const user: User = lobby.value.players.find((user) => user.socketId === key);
+      const score = props.totalScores?.[key];
+      data.push({
+        user,
+        score,
+      })
+    } catch (e) {
+      console.warn(e)
     }
-  })
+    return data;
+  }
 })
 
 function trophyColor(index) {

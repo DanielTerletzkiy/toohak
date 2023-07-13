@@ -19,20 +19,26 @@ const scores = computed(() => {
     return;
   }
   const keys = Object.keys(scoreboard.value.score);
-  return keys.map((key: string) => {
+  const data = [];
+  for (const key of keys) {
     if (!lobby.value || !scoreboard.value) {
-      return;
+      continue;
     }
-    //@ts-ignore
-    const user: User = lobby.value.players.find((user) => user.socketId === key);
-    const scores: ScoreRound[] = scoreboard.value.score[key];
-    const sum = scores.reduce((a, b) => a + b.score, 0)
-    return {
-      user,
-      scores,
-      sum,
+    try {
+      //@ts-ignore
+      const user: User = lobby.value.players.find((user) => user.socketId === key);
+      const scores: ScoreRound[] = scoreboard.value.score[key];
+      const sum = scores.reduce((a, b) => a + b.score, 0)
+      data.push({
+        user,
+        scores,
+        sum,
+      })
+    } catch (e) {
+      console.warn(e)
     }
-  })
+  }
+  return data;
 })
 
 </script>
