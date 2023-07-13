@@ -336,12 +336,12 @@ export class LobbiesService {
                 let value = 0;
 
                 if (!answer) {
-                    score[user.socketId].push({round: round, score: 0, time: '-'});
+                    score[user.socketId].push({round: round, score: 0, time: -1});
                     return;
                 }
 
                 if (answer.question.correctAnswer === answer.chosenAnswer) {
-                    value = (maxPoints * answer.reactionTime) / lobby.questionDuration;
+                    value = Math.round((maxPoints * answer.reactionTime) / lobby.questionDuration);
                 }
 
                 score[user.socketId].push({
@@ -355,12 +355,14 @@ export class LobbiesService {
             });
         });
 
-        const sortedTotalScore = Object.entries(totalScore)
+        const sortedTotalScore: ScoreTotal = Object.entries(totalScore)
             .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
             .reduce((acc, [key, value]) => ({...acc, [key]: value}), {});
 
-        this.gatewayService.emit(score, id, SocketAction.ScoreboardUpdate);
+        const payload = {totalScore: sortedTotalScore, score};
 
-        return {totalScore: sortedTotalScore, score};
+        this.gatewayService.emit(payload, id, SocketAction.ScoreboardUpdate);
+
+        return payload;
     }
 }

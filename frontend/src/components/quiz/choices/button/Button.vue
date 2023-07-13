@@ -34,6 +34,8 @@ const currentType = computed(() => AnswerStyles[props.type]);
     :color="currentType.color"
     :disabled="buttonsDeactivated || lobby.state !== LobbyState.Question"
     :outlined="voted === type"
+    outline-width="4px"
+    :outline-color="currentType.color"
     @click="() => submit(type)"
   >
     <d-icon :name="currentType.icon" :size="(parseInt(size) || 50) - 20" />

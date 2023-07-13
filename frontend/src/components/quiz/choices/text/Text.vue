@@ -50,6 +50,7 @@ const showCorrect = computed(
 
   &.correct {
     transform: scale(1.05);
+    z-index: 1;
   }
 }
 </style>

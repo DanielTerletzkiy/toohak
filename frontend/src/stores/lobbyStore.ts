@@ -3,11 +3,13 @@ import { computed, ref } from "vue";
 import ApiFetchService, { Method } from "../services/ApiFetch.ts";
 import { Lobby } from "../../../backend/src/lobbies/entities/lobby.entity.ts";
 import { useGlobalStore } from "./globalStore.ts";
+import {Scoreboard} from "../../../backend/shared/types/Score.ts";
 
 export const useLobbyStore = defineStore("lobbyStore", () => {
   const lobbyId = ref<string>("");
-
   const lobby = ref<Lobby>();
+
+  const scoreboard = ref<Scoreboard>();
 
   async function join(id: string) {
     if (!id.length) {
@@ -51,6 +53,7 @@ export const useLobbyStore = defineStore("lobbyStore", () => {
       Method.Get,
       `/lobbies/${lobbyId.value}`
     );
+    console.log({lobby: lobby.value})
   }
 
   const isHost = computed(() => {
@@ -71,5 +74,5 @@ export const useLobbyStore = defineStore("lobbyStore", () => {
     return url.toString();
   })
 
-  return { lobbyId, lobby, join, create, start, fetchLobby, isHost, url };
+  return { lobbyId, lobby, scoreboard, join, create, start, fetchLobby, isHost, url };
 });
