@@ -51,9 +51,14 @@ export class GatewayGateway
     const playerId = client.handshake.query.playerId as string;
     console.log({ disconnect: playerId });
 
-    const openLobby = await this.lobbiesService.hostHasOpenLobby(playerId);
-    if (typeof openLobby === 'string') {
-      await this.lobbiesService.closeLobby(openLobby);
+    const hostedLobby = await this.lobbiesService.hostHasOpenLobby(playerId);
+    if (typeof hostedLobby === 'string') {
+      await this.lobbiesService.closeLobby(hostedLobby);
+    }
+
+    const playingLobby = await this.lobbiesService.playerHasOpenLobby(playerId);
+    if (typeof playingLobby === 'string') {
+      await this.lobbiesService.leaveLobby(playingLobby, playerId);
     }
 
     this.socketUsers.delete(playerId);
@@ -73,7 +78,7 @@ export class GatewayGateway
     const user = new User();
     user.socketId = playerId;
 
-    const lobbyId = await this.lobbiesService.playerHasOpenLobby(user);
+    const lobbyId = await this.lobbiesService.playerHasOpenLobby(user.socketId);
     if (typeof lobbyId === 'boolean') {
       return;
     }

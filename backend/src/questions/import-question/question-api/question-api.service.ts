@@ -26,10 +26,17 @@ export class QuestionApiService {
   ) {}
 
   async getQuestions(): Promise<Question[]> {
+    const url = new URL('https://the-trivia-api.com/v2/questions');
+    url.searchParams.set("difficulties", "easy,medium")
+    url.searchParams.set("region", "DE");
+
+    console.log(url.toString())
+
     const response = await this.http
-      .get<TriviaQuestion[]>('https://the-trivia-api.com/v2/questions')
+      .get<TriviaQuestion[]>(url.toString())
       .toPromise();
     const responseData = response.data;
+    console.log(responseData)
     const questions = responseData.map((question) =>
       this.mapTriviaQuestionToQuestion(question),
     );
