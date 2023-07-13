@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import {computed, ref} from "vue";
 import { Answer } from "../../../backend/shared/enums/Answer";
 import {
-  QuestionChangeHost,
+  QuestionChangeHost, QuestionProgress,
   SubmitData,
 } from "../../../backend/shared/types/SocketData";
 import { useSocketEmit } from "../composables/socket.composable.ts";
@@ -14,20 +14,27 @@ export const useQuestionStore = defineStore("questionStore", () => {
   const voted = ref<Answer | boolean>(false);
   const correctAnswer = ref<Answer | null>(null);
 
+  const progress = ref<QuestionProgress | null>(null);
+
   const answers = ref<QuestionChangeHost["answers"] | null>(null);
 
-  const progress = ref<number>(30000);
+  const timerProgress = ref<number>(30000);
 
   let interval: number = -1;
 
   function startCountdown() {
+    resetCountdown();
     // @ts-ignore
     interval = setInterval(() => {
-      progress.value -= 1000;
-      if (progress.value <= 0) {
-        clearInterval(interval);
+      timerProgress.value -= 1000;
+      if (timerProgress.value <= 0) {
+        resetCountdown()
       }
     }, 1000);
+  }
+
+  function resetCountdown(){
+    clearInterval(interval);
   }
 
   function submit(answer: Answer) {
@@ -50,9 +57,11 @@ export const useQuestionStore = defineStore("questionStore", () => {
     questionText,
     voted,
     correctAnswer,
-    answers,
     progress,
+    answers,
+    timerProgress,
     startCountdown,
+    resetCountdown,
     submit,
     buttonsDeactivated
   };

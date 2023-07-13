@@ -20,7 +20,7 @@ export class LobbyWorkerService {
   }
 
   async nextQuestion(lobbyId: Lobby['id']) {
-    const lobby = await this.lobbiesService.findOneWithQuestionData(lobbyId);
+    let lobby = await this.lobbiesService.findOneWithQuestionData(lobbyId);
     if (!lobby) {
       return;
     }
@@ -34,7 +34,9 @@ export class LobbyWorkerService {
     await this.lobbiesService.setState(lobbyId, LobbyState.Question);
 
     await this.lobbiesService.nextQuestion(lobbyId);
-    if (lobby.noQuestions()) {
+    lobby = await this.lobbiesService.findOneWithQuestionData(lobbyId);
+
+    if (lobby.noQuestions) {
       return await this.lobbiesService.setState(lobbyId, LobbyState.Completed);
     }
     const timeout = setTimeout(
@@ -62,5 +64,34 @@ export class LobbyWorkerService {
       `${lobbyId}/question/${lobby.activeQuestion}`,
       timeout,
     );
+  }
+
+  async checkQuestionTimeoutSkip(lobbyId: Lobby['id']) {
+    const lobby = await this.lobbiesService.findOneWithQuestionData(lobbyId);
+    if (!lobby) {
+      return;
+    }
+
+    const players = lobby.players;
+    const question = lobby.currentQuestion;
+
+    if (!question) {
+      return;
+    }
+
+    const userAnswers = lobby.userAnswers.filter(
+      (answer) => answer.question.id === question.id,
+    );
+
+    const allVoted = userAnswers.length === players.length;
+    if (!allVoted) {
+      return;
+    }
+
+    this.schedulerRegistry.deleteTimeout(
+      `${lobbyId}/scoreboard/${lobby.activeQuestion}`,
+    );
+
+    return this.showScoreboard(lobbyId);
   }
 }

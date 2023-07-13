@@ -31,7 +31,7 @@ const { id, questionText, buttonsDeactivated } = storeToRefs(questionStore);
 
 <style scoped lang="scss">
 .page {
-  height: calc(100vh - 54px);
+  height: 100vh;
   padding: 12px !important;
 
   .question {

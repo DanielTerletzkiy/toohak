@@ -7,12 +7,14 @@ import { CreateUserAnswersDto } from './dto/create-user-answere.dto';
 import { User } from '../users/entities/user.entity';
 import { Lobby } from '../lobbies/entities/lobby.entity';
 import { Answer } from '../../shared/enums/Answer';
+import { LobbyWorkerService } from '../lobby-worker/lobby-worker.service';
 
 @Injectable()
 export class UserAnswersService {
   constructor(
     @InjectRepository(UserAnswer)
     private userAnswerRepository: Repository<UserAnswer>,
+    private lobbyWorkerService: LobbyWorkerService,
   ) {}
 
   async create(createUserAnswersDto: CreateUserAnswersDto) {
@@ -42,7 +44,9 @@ export class UserAnswersService {
     userAnswer.reactionTime =
       new Date().getTime() - lobby.activeQuestionStart.getTime();
 
-    return this.create(userAnswer);
+    const answer = await this.create(userAnswer);
+    await this.lobbyWorkerService.checkQuestionTimeoutSkip(lobby.id);
+    return answer;
   }
 
   async isDuplicate(createUserAnswersDto: CreateUserAnswersDto) {

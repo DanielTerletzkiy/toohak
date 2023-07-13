@@ -1,6 +1,10 @@
 import { Answer } from '../enums/Answer';
 import { Question } from '../../src/questions/entities/question.entity';
-import { Lobby } from '../../src/lobbies/entities/lobby.entity';
+
+export type QuestionProgress = {
+  current: number;
+  total: number;
+};
 
 export type QuestionChangePlayer = {
   id: string;
@@ -17,6 +21,7 @@ export type QuestionChangeHost = {
     c: string;
     d: string;
   };
+  progress: QuestionProgress;
 };
 
 export type SubmitData = {

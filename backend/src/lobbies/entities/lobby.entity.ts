@@ -12,6 +12,7 @@ import {
 import { UserAnswer } from '../../user-answers/entities/user-answer.entity';
 import { Question } from 'src/questions/entities/question.entity';
 import { LobbyState } from '../../../shared/enums/Lobby';
+import { QuestionProgress } from '../../../shared/types/SocketData';
 
 @Entity()
 export class Lobby {
@@ -41,7 +42,7 @@ export class Lobby {
   @JoinTable()
   questions: Question[];
 
-  @Column({ default: 0 })
+  @Column({ default: -1 })
   activeQuestion: number;
 
   @Column({ default: 30000 })
@@ -50,17 +51,31 @@ export class Lobby {
   @Column({ enum: LobbyState, default: LobbyState.Idle })
   state: LobbyState;
 
-  getNextQuestion(): Question {
+  get nextQuestion(): Question {
     if (this.activeQuestion < this.questions.length) {
-      const question = this.questions[this.activeQuestion];
       this.activeQuestion++;
+      const question = this.questions[this.activeQuestion];
       this.activeQuestionStart = new Date();
       return question;
     }
     return null;
   }
 
-  noQuestions(): boolean {
+  get currentQuestion(): Question {
+    if (this.activeQuestion < 0) {
+      return null;
+    }
+    return this.questions[this.activeQuestion];
+  }
+
+  get progress(): QuestionProgress {
+    return {
+      total: this.questions.length,
+      current: this.activeQuestion,
+    };
+  }
+
+  get noQuestions(): boolean {
     return this.activeQuestion > this.questions.length - 1;
   }
 }

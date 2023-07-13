@@ -12,7 +12,7 @@ const lobbyStore = useLobbyStore();
 const { lobby } = storeToRefs(lobbyStore);
 
 const questionStore = useQuestionStore();
-const { questionText, answers, correctAnswer, progress } =
+const { questionText, answers, correctAnswer, timerProgress, progress } =
   storeToRefs(questionStore);
 </script>
 
@@ -20,8 +20,8 @@ const { questionText, answers, correctAnswer, progress } =
   <d-card-title class="question font-size-large pt-16">
     {{ questionText }}
   </d-card-title>
-  <d-card-subtitle class="font-size-medium pb-16">
-    Question
+  <d-card-subtitle v-if="progress" class="font-size-medium pb-16">
+    Question {{ progress.current + 1}} / {{progress.total}}
   </d-card-subtitle>
   <TextGrid class="ma-2" :answers="answers" :size="`${buttonSize - 20}px`" />
   <d-card-subtitle v-if="lobby" class="ma-0">
@@ -29,10 +29,10 @@ const { questionText, answers, correctAnswer, progress } =
       class="progress"
       color="primary"
       :max="lobby.questionDuration"
-      v-model="progress"
+      v-model="timerProgress"
       show-label
     >
-      <template v-slot:progress> {{ Math.round(progress) / 1000 }}s</template>
+      <template v-slot:progress> {{ Math.round(timerProgress) / 1000 }}s</template>
     </d-progressbar>
   </d-card-subtitle>
 </template>
