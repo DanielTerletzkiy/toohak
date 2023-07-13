@@ -41,7 +41,7 @@ onMounted(()=>{
 <template>
   <d-column block gap>
     <d-card-subtitle class="pb-0"> Welcome to</d-card-subtitle>
-    <d-card-title color="primary" class="pt-0"> Toohak!</d-card-title>
+    <d-card-title color="primary" class="pt-0"> !toohaK</d-card-title>
     <d-spacer />
     <d-row justify="center">
       <d-column gap class="choice-container" block>
