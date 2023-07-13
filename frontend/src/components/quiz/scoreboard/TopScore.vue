@@ -13,8 +13,9 @@ const lobbyStore = useLobbyStore();
 const {lobby} = storeToRefs(lobbyStore);
 
 const topScores = computed(() => {
+  console.log(props.totalScores)
   const keys = Object.keys(props.totalScores)//.slice(0, 2);
-  console.warn({keys})
+  console.log({keys})
   const data = [];
   for (const key of keys) {
     if (!lobby.value || !props.totalScores) {
