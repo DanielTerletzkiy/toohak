@@ -11,3 +11,4 @@ SocketID= for Connection identification
 ## tutorials
 - https://youtu.be/rKgZLVgdvAY (TypeORM Relationship)
 - https://youtu.be/5G81_VIjaO8 (TypeORM Migrations)
+- https://orkhan.gitbook.io/typeorm/docs/entities (typeorm doc)
