@@ -14,6 +14,7 @@ const {lobby} = storeToRefs(lobbyStore);
 
 const topScores = computed(() => {
   const keys = Object.keys(props.totalScores).slice(0, 2);
+  console.warn({keys})
   const data = [];
   for (const key of keys) {
     if (!lobby.value || !props.totalScores) {
@@ -31,6 +32,7 @@ const topScores = computed(() => {
     } catch (e) {
       console.warn(e)
     }
+    console.log({data})
     return data;
   }
 })
@@ -52,6 +54,7 @@ function trophyColor(index) {
 
 <template>
   <d-row>
+    {{topScores}}
     <d-card v-for="(top, i) in topScores" :key="top.user.socketId" class="top" width="350px">
       <d-row>
         <d-avatar elevation="n2" :size="100" glowing :color="trophyColor(i)">
