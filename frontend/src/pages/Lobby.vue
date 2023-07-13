@@ -83,6 +83,7 @@ async function onStateChange(state: LobbyState) {
     case LobbyState.Started:
       break;
     case LobbyState.Completed:
+      await router.replace("/lobby/");
       break;
     case LobbyState.Closed:
       if (lobby.value.closedDate) {
