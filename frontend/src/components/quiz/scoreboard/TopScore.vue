@@ -16,14 +16,14 @@ const topScores = computed(() => {
   const keys = Object.keys(props.totalScores).slice(0, 3);
   const data = [];
   for (const key of keys) {
-    if (!lobby.value) {
+    if (!lobby.value || !props.totalScores) {
       continue;
     }
     try {
 
       //@ts-ignore
       const user: User = lobby.value.players.find((user) => user.socketId === key);
-      const score = props.totalScores?.[key];
+      const score: number = props.totalScores[key];
       data.push({
         user,
         score,
