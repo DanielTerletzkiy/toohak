@@ -18,14 +18,14 @@ const { join: joinLobby, create: createLobby } = lobbyStore;
 const lobbyId = ref("");
 
 const questionAmount = ref(10);
-const questionDuration = ref(30000);
+const questionDuration = ref(30);
 
 function onJoin() {
   joinLobby(lobbyId.value);
 }
 
 function onCreate() {
-  createLobby(questionAmount.value, questionDuration.value);
+  createLobby(questionAmount.value, questionDuration.value * 1000);
 }
 
 onMounted(()=>{
@@ -101,7 +101,7 @@ onMounted(()=>{
                 type="number"
                 elevation="4"
               >
-                <template v-slot:suffix> milliseconds</template>
+                <template v-slot:suffix> seconds</template>
               </d-textfield>
             </d-row>
           </d-column>
