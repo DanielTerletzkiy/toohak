@@ -131,7 +131,7 @@ export class LobbiesService {
             throw new ConflictException(`This lobby does not exist (anymore)`);
         }
 
-        const index = lobby.players.findIndex((player)=>player.socketId === userId);
+        const index = lobby.players.findIndex((player) => player.socketId === userId);
         lobby.players.splice(index, 1);
 
         await this.lobbyRepository.save(lobby);
@@ -341,7 +341,10 @@ export class LobbiesService {
                 }
 
                 if (answer.question.correctAnswer === answer.chosenAnswer) {
-                    value = Math.round((maxPoints * answer.reactionTime) / lobby.questionDuration);
+                    value = maxPoints - Math.round((maxPoints * answer.reactionTime) / lobby.questionDuration);
+                    if (value < 0) {
+                        value = 0;
+                    }
                 }
 
                 score[user.socketId].push({

@@ -52,7 +52,7 @@ function trophyColor(index) {
 
 <template>
   <d-row>
-    <d-card v-for="(top, i) in topScores" :key="i" class="top" width="350px">
+    <d-card v-for="(top, i) in topScores" :key="top.user.socketId" class="top" width="350px">
       <d-row>
         <d-avatar elevation="n2" :size="100" glowing :color="trophyColor(i)">
           <d-icon name="trophy" :size="80"/>
