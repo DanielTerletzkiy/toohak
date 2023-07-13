@@ -131,8 +131,8 @@ export class LobbiesService {
             throw new ConflictException(`This lobby does not exist (anymore)`);
         }
 
-        const index = lobby.players.findIndex((player) => player.socketId === userId);
-        lobby.players.splice(index, 1);
+        //const index = lobby.players.findIndex((player) => player.socketId === userId);
+        //lobby.players.splice(index, 1);
 
         await this.lobbyRepository.save(lobby);
         this.gatewayService.emit(null, id, SocketAction.LobbyUpdate);
