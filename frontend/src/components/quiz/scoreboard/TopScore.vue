@@ -13,17 +13,13 @@ const lobbyStore = useLobbyStore();
 const {lobby} = storeToRefs(lobbyStore);
 
 const topScores = computed(() => {
-  console.log(props.totalScores)
   const keys = Object.keys(props.totalScores)//.slice(0, 2);
-  console.log({keys})
   const data = [];
   for (const key of keys) {
     if (!lobby.value || !props.totalScores) {
-      console.log(!lobby.value || !props.totalScores, lobby.value, props.totalScores)
       continue;
     }
     try {
-
       //@ts-ignore
       const user: User = lobby.value.players.find((user) => user.socketId === key);
       const score: number = props.totalScores[key];
@@ -34,9 +30,8 @@ const topScores = computed(() => {
     } catch (e) {
       console.warn(e)
     }
-    console.log({data})
-    return data;
   }
+  return data;
 })
 
 function trophyColor(index) {
@@ -56,7 +51,6 @@ function trophyColor(index) {
 
 <template>
   <d-row>
-    {{topScores}}
     <d-card v-for="(top, i) in topScores" :key="top.user.socketId" class="top" width="350px">
       <d-row>
         <d-avatar elevation="n2" :size="100" glowing :color="trophyColor(i)">
