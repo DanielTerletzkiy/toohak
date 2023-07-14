@@ -16,12 +16,13 @@ const lobbyStore = useLobbyStore();
 const { join: joinLobby, create: createLobby } = lobbyStore;
 
 const lobbyId = ref("");
+const username = ref("");
 
 const questionAmount = ref(10);
 const questionDuration = ref(30);
 
 function onJoin() {
-  joinLobby(lobbyId.value);
+  joinLobby(lobbyId.value, username.value);
 }
 
 function onCreate() {
@@ -51,24 +52,36 @@ onMounted(()=>{
           <d-card-subtitle class="font-size-medium font-weight-bold">
             Be the Player!
           </d-card-subtitle>
-          <d-column no-padding class="ma-2">
+          <d-column no-padding gap class="ma-2">
             <d-textfield
-              v-model="lobbyId"
-              color="primary"
-              full-width
-              filled
-              placeholder="Lobby ID"
-              solo
-              @enter="onJoin"
-              elevation="4"
+                v-model="username"
+                color="primary"
+                full-width
+                filled
+                placeholder="Username (Optional)"
+                solo
+                elevation="4"
+                type="name"
+            >
+            </d-textfield>
+            <d-textfield
+                v-model="lobbyId"
+                color="primary"
+                full-width
+                filled
+                placeholder="Lobby ID"
+                solo
+                @enter="onJoin"
+                elevation="4"
+                type="id"
             >
               <template v-slot:suffix>
                 <d-icon-button
-                  :size="30"
-                  active
-                  color="primary"
-                  name="arrow-right"
-                  @click="onJoin"
+                    :size="30"
+                    active
+                    color="primary"
+                    name="arrow-right"
+                    @click="onJoin"
                 />
               </template>
             </d-textfield>
