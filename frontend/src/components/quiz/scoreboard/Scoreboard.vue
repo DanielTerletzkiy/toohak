@@ -68,14 +68,14 @@ const scores = computed(() => {
               lobby.state !== LobbyState.Completed && progress.current === i
             "
             elevation="1"
-            width="150px"
+            width="100px"
             class="score font-size-medium"
           >
             {{ scoreData.score }}
           </d-card-subtitle>
           <d-card-subtitle
             elevation="4"
-            width="150px"
+            width="100px"
             class="score font-size-medium font-weight-bold"
           >
             <d-icon name="abacus" />
