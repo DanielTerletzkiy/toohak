@@ -40,6 +40,8 @@ const { questionText, answers, correctAnswer, timerProgress, progress } =
 <style scoped lang="scss">
 .question {
   font-family: Consolas, sans-serif;
+  max-width: 75vw;
+  line-break: auto;
 }
 
 .progress {
