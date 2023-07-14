@@ -17,7 +17,9 @@ export const useLobbyStore = defineStore("lobbyStore", () => {
         }
 
         if (username?.length) {
-            await ApiFetchService.fetch(Method.Post, `/users/username`, {username});
+            const globalStore = useGlobalStore()
+            const {setUsername} = globalStore;
+            await setUsername(username);
         }
 
         const joinedLobby = await ApiFetchService.fetch<boolean>(Method.Post, `/lobbies/${id}/join`);

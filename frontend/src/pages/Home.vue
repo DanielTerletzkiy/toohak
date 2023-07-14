@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import {useGlobalStore} from "../stores/globalStore.ts";
 import {useLobbyStore} from "../stores/lobbyStore.ts";
-import {inject, onMounted, ref} from "vue";
+import {inject, onBeforeMount, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
 import {State} from "vuelize/src/types/Vuelize.ts";
+import {storeToRefs} from "pinia";
 
 const route = useRoute();
 
 const vuelize = inject("vuelize") as Vuelize
 
 const globalStore = useGlobalStore();
-const { canHost, isMobile } = globalStore;
+const { canHost, isMobile, user } = storeToRefs(globalStore);
+const {fetchCurrentUser} = globalStore;
 
 const lobbyStore = useLobbyStore();
 const { join: joinLobby, create: createLobby } = lobbyStore;
@@ -28,6 +30,14 @@ function onJoin() {
 function onCreate() {
   createLobby(questionAmount.value, questionDuration.value * 1000);
 }
+
+onBeforeMount(async ()=> {
+  await fetchCurrentUser();
+  if(!user.value){
+    return;
+  }
+  username.value = user.value.username;
+})
 
 onMounted(()=>{
   const lobby = route.query.lobby as string;

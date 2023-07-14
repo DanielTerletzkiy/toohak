@@ -16,6 +16,11 @@ export class UsersController {
     return this.usersService.findOne(id);
   }
 
+  @Get('current')
+  findCurrent(@Req() request: RequestPlayer) {
+    return request.player;
+  }
+
   @Post('username')
   setName(@Body() body, @Req() request: RequestPlayer) {
     const user = request.player;
