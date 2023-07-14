@@ -10,7 +10,7 @@ const route = useRoute();
 const vuelize = inject("vuelize") as Vuelize
 
 const globalStore = useGlobalStore();
-const { canHost } = globalStore;
+const { canHost, isMobile } = globalStore;
 
 const lobbyStore = useLobbyStore();
 const { join: joinLobby, create: createLobby } = lobbyStore;
@@ -42,7 +42,9 @@ onMounted(()=>{
   <d-column block gap>
     <d-card-subtitle class="pb-0"> Welcome to</d-card-subtitle>
     <d-card-title color="primary" class="pt-0"> !toohaK</d-card-title>
-    <d-spacer />
+    <d-row justify="center">
+      <d-image src="/logo.png" v-if="!isMobile" height="350px" width="500px"/>
+    </d-row>
     <d-row justify="center">
       <d-column gap class="choice-container" block>
         <d-column elevation="2" block>
