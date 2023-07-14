@@ -371,7 +371,11 @@ export class LobbiesService {
             .sort(([, scoreA], [, scoreB]) => scoreB - scoreA)
             .reduce((acc, [key, value]) => ({...acc, [key]: value}), {});
 
-        const payload = {totalScore: sortedTotalScore, score};
+        const sortedScore: ScoreRounds = Object.fromEntries(
+          Object.keys(sortedTotalScore).map((key) => [key, score[key]])
+        );
+          
+        const payload = { totalScore: sortedTotalScore, score: sortedScore };
 
         this.gatewayService.emit(payload, id, SocketAction.ScoreboardUpdate);
 

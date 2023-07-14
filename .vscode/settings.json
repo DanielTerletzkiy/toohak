@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "SQLite",
+            "database": "${workspaceFolder:toohak}/backend/db.sqlite"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
