@@ -34,6 +34,6 @@ requestWakeLock();
 
 <style lang="scss">
 main {
-  height: 100vh;
+  height: 100svh;
 }
 </style>

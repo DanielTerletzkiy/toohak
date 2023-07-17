@@ -20,7 +20,6 @@ const { id, questionText, buttonsDeactivated } = storeToRefs(questionStore);
       </d-card-title>
       <d-card-subtitle class="ma-2"> Question</d-card-subtitle>
     </d-card>
-    <d-spacer />
     <ButtonGrid
       :key="id"
       :disabled="buttonsDeactivated"
@@ -33,6 +32,7 @@ const { id, questionText, buttonsDeactivated } = storeToRefs(questionStore);
 .page {
   height: 100%;
   padding: 12px !important;
+  justify-content: space-between;
 
   .question {
     font-family: Consolas,sans-serif;
