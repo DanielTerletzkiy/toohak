@@ -1,7 +1,7 @@
 # toohak
 
 ## setup project:
-- install nodejs
+- install nodejs 16.x
 - install git
 - clone repository on workstation
 
